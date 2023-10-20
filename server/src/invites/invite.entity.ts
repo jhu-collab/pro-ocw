@@ -1,25 +1,32 @@
 import { Course } from 'src/courses/course.entity';
 import { User } from 'src/users/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
+@Index(['userId', 'courseId'], { unique: true }) // enforce unique invites
 export class Invite {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   public createdAt: Date;
 
   @Column()
   public role: string;
 
-  @Column()
+  @Column({ default: false })
   public joined: boolean;
 
   @Column()
   public email: string;
 
-  @Column()
+  @Column({ default: false })
   public send: boolean;
 
   @Column()
