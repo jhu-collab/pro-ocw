@@ -7,7 +7,7 @@ export class Member {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   public createdAt: Date;
 
   @Column()

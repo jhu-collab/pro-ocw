@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { InvitesService } from './invites.service';
 import { Invite } from './invite.entity';
 import { BatchCreateInviteDto } from './invite.dto';
+import { Member } from 'src/members/member.entity';
 
 @Controller('invites')
 export class InvitesController {
@@ -22,5 +23,10 @@ export class InvitesController {
     @Body() batchCreateInviteDto: BatchCreateInviteDto,
   ): Promise<Invite[]> {
     return this.inviteService.batchCreateInvite(batchCreateInviteDto.data);
+  }
+
+  @Get('/:id/accept')
+  async acceptInvite(@Param('id') id: string): Promise<Member> {
+    return this.inviteService.acceptInvite(id);
   }
 }
