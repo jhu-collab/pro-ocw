@@ -17,7 +17,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 // /** @type {import('contentlayer/source-files').ComputedFields} */
 const computedSlugFields = defineComputedFields<
-  "Page" | "Doc" | "Guide" | "Post" | "Author" | "Log"
+  "Page" | "Coursebook" | "Guide" | "Post" | "Author" | "Log"
 >({
   slug: {
     type: "string",
@@ -118,9 +118,9 @@ export const getLastEditedDate =
 
 export type DocHeading = { level: 1 | 2 | 3; title: string };
 
-export const Doc = defineDocumentType(() => ({
-  name: "Doc",
-  filePathPattern: `docs/**/*.mdx`,
+export const CourseBook = defineDocumentType(() => ({
+  name: "Coursebook",
+  filePathPattern: `coursebooks/**/*.mdx`,
   contentType: "mdx",
   fields: {
     title: {
@@ -205,7 +205,7 @@ const tocPlugin =
 
 export default makeSource({
   contentDirPath: "content",
-  documentTypes: [Post, Author, Log, Doc, CodePage],
+  documentTypes: [Post, Author, Log, CourseBook, CodePage],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [

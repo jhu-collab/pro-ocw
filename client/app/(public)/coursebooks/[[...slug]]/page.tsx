@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import cn from "@/lib/cn";
 import { sluggifyTitle } from "@/lib/contentUtils";
 import type { DocHeading } from "contentlayer.config";
-import { Doc, allDocs } from "contentlayer/generated";
+import { Coursebook, allCoursebooks } from "contentlayer/generated";
 import { capitalize } from "lodash";
 import { SidebarClose, SidebarOpen } from "lucide-react";
 import NextLink from "next/link";
@@ -23,7 +23,10 @@ type NavTreeNode = {
   children: NavTreeNode[];
 };
 
-const constructTOC = (docs: Doc[], title: string | null): NavTreeNode => {
+const constructTOC = (
+  docs: Coursebook[],
+  title: string | null
+): NavTreeNode => {
   const doc = docs[0];
   if (doc && docs.length === 1 && doc.pathSegments.length === 0) {
     return {
@@ -153,7 +156,7 @@ const Doc = ({
   const { slug } = params;
   const pagePath = (slug && slug.join("/")) ?? "";
 
-  const doc = allDocs.find(
+  const doc = allCoursebooks.find(
     (d) =>
       d.pathSegments.map((ps: PathSegment) => ps.name).join("/") === pagePath
   );
@@ -162,7 +165,12 @@ const Doc = ({
     throw new Error(`No doc found for slug: ${slug}`);
   }
 
-  const toc = constructTOC(allDocs, null);
+  const currentCoursebook = allCoursebooks.filter(
+    (d) => d.pathSegments[0].name === slug[0]
+  );
+
+  const toc = constructTOC(currentCoursebook, null);
+  // console.log(toc);
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
