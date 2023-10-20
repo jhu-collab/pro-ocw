@@ -16,8 +16,11 @@ export class Course {
   @Column()
   public subscribed: boolean;
 
-  @Column({ unique: true })
+  @Column()
   public name: string;
+
+  @Column({ unique: true })
+  public coursebookId: string;
 
   @Column()
   public semester: string;
