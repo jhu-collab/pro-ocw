@@ -12,6 +12,6 @@ export class MembersService {
   }
 
   async getMembers(courseId: string): Promise<Member[]> {
-    return this.memberRepository.getMembers(courseId);
+    return this.memberRepository.findBy({ courseId });
   }
 }

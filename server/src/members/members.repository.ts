@@ -18,8 +18,4 @@ export class MemberRepository extends Repository<Member> {
     });
     return await this.save(member);
   }
-
-  async getMembers(courseId: string): Promise<Member[]> {
-    return await this.findBy({ courseId });
-  }
 }
