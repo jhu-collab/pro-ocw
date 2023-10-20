@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MemberRepository } from './members.repository';
-import { CreateMemberDto } from './member.dto';
+import { CreateMemberDto, GetMemberByCourseAndUserDto } from './member.dto';
 import { Member } from './member.entity';
 
 @Injectable()
@@ -12,6 +12,18 @@ export class MembersService {
   }
 
   async getMembers(courseId: string): Promise<Member[]> {
-    return this.memberRepository.findBy({ courseId });
+    return await this.memberRepository.findBy({ courseId });
+  }
+
+  async getMemberByCourseAndUser(
+    getMemberByCourseAndUserDto: GetMemberByCourseAndUserDto,
+  ): Promise<Member> {
+    const res = await this.memberRepository.findOneBy(
+      getMemberByCourseAndUserDto,
+    );
+    if (!res) {
+      throw new NotFoundException('Member not found');
+    }
+    return res;
   }
 }
