@@ -1,8 +1,15 @@
 import { Course } from 'src/courses/course.entity';
 import { User } from 'src/users/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
+@Index(['userId', 'courseId'], { unique: true }) // one user can only be a member of a course once
 export class Member {
   @PrimaryGeneratedColumn('uuid')
   public id: string;

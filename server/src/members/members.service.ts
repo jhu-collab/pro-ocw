@@ -11,7 +11,7 @@ export class MembersService {
     return this.memberRepository.createMember(createMemberDto);
   }
 
-  async getMembers(courseId: string): Promise<Member[]> {
+  async getMembersByCourse(courseId: string): Promise<Member[]> {
     return await this.memberRepository.findBy({ courseId });
   }
 

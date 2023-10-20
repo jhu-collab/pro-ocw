@@ -40,4 +40,8 @@ export class InvitesService {
     await this.deleteInviteById(id);
     return member;
   }
+
+  async getInvitesByCourse(courseId: string): Promise<Invite[]> {
+    return this.inviteRepository.findBy({ courseId });
+  }
 }

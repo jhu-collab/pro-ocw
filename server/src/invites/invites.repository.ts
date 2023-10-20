@@ -13,7 +13,11 @@ export class InviteRepository extends Repository<Invite> {
     batchCreateInviteDto: CreateInviteDto[],
   ): Promise<Invite[]> {
     const query = this.createQueryBuilder('invite');
-    const invites = await query.insert().values(batchCreateInviteDto).execute();
+    const invites = await query
+      .insert()
+      .values(batchCreateInviteDto)
+      .orIgnore() // ignore duplicate invites
+      .execute();
     return invites.generatedMaps as Invite[];
   }
 }

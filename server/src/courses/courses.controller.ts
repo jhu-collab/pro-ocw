@@ -17,4 +17,9 @@ export class CoursesController {
   getMembers(@Param('id') id: string): Promise<Member[]> {
     return this.coursesService.getMembers(id);
   }
+
+  @Get('/:id/invites')
+  getInvites(@Param('id') id: string): Promise<Member[]> {
+    return this.coursesService.getInvites(id);
+  }
 }
