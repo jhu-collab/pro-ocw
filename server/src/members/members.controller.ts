@@ -1,7 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { Member } from './member.entity';
-import { GetMemberByCourseAndUserDto } from './member.dto';
+import { MemberByCourseAndUserDto } from './member.dto';
 
 @Controller('members')
 export class MembersController {
@@ -9,10 +9,17 @@ export class MembersController {
 
   @Get('/users/:userId/courses/:courseId')
   getMemberByCourseAndUser(
-    @Param() getMemberByCourseAndUserDto: GetMemberByCourseAndUserDto,
+    @Param() memberByCourseAndUserDto: MemberByCourseAndUserDto,
   ): Promise<Member> {
     return this.membersService.getMemberByCourseAndUser(
-      getMemberByCourseAndUserDto,
+      memberByCourseAndUserDto,
     );
+  }
+
+  @Delete('/users/:userId/courses/:courseId')
+  removeUserFromCourse(
+    @Param() memberByCourseAndUserDto: MemberByCourseAndUserDto,
+  ): Promise<void> {
+    return this.membersService.removeUserFromCourse(memberByCourseAndUserDto);
   }
 }
