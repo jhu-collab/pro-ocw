@@ -10,4 +10,8 @@ export class MembersService {
   async createMember(createMemberDto: CreateMemberDto): Promise<Member> {
     return this.memberRepository.createMember(createMemberDto);
   }
+
+  async getMembers(courseId: string): Promise<Member[]> {
+    return this.memberRepository.getMembers(courseId);
+  }
 }
