@@ -36,4 +36,9 @@ export class AuthController {
   getProfile(@CurrentUser() user: CurrentUserInfo) {
     return user;
   }
+
+  @Get('current-user')
+  getCurrentUser(@CurrentUser() user: CurrentUserInfo) {
+    return this.authService.getCurrentUser(user);
+  }
 }
