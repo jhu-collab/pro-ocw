@@ -1,8 +1,8 @@
 import { Member } from 'src/members/member.entity';
-import { CreateCourseDto } from './course.dto';
+import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { Course } from './course.entity';
 import { CoursesService } from './courses.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('courses')
@@ -15,11 +15,6 @@ export class CoursesController {
     return this.coursesService.getCourse(id);
   }
 
-  @Post()
-  createCourse(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
-    return this.coursesService.createCourse(createCourseDto);
-  }
-
   @Get('/:id/members')
   getMembers(@Param('id') id: string): Promise<Member[]> {
     return this.coursesService.getMembers(id);
@@ -28,5 +23,18 @@ export class CoursesController {
   @Get('/:id/invites')
   getInvites(@Param('id') id: string): Promise<Member[]> {
     return this.coursesService.getInvites(id);
+  }
+
+  @Post()
+  createCourse(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
+    return this.coursesService.createCourse(createCourseDto);
+  }
+
+  @Put('/:id')
+  updateCourse(
+    @Param('id') id: string,
+    @Body() updateCourseDto: UpdateCourseDto,
+  ) {
+    return this.coursesService.updateCourse(id, updateCourseDto);
   }
 }

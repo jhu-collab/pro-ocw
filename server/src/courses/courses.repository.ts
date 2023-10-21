@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Course } from './course.entity';
-import { CreateCourseDto } from './course.dto';
+import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 
 @Injectable()
 export class CourseRepository extends Repository<Course> {
@@ -22,5 +22,16 @@ export class CourseRepository extends Repository<Course> {
       createdAt: new Date(),
     });
     return await this.save(course);
+  }
+
+  async updateCourse(
+    id: string,
+    updateCourseDto: UpdateCourseDto,
+  ): Promise<Course> {
+    const course = await this.save({
+      id,
+      ...updateCourseDto,
+    });
+    return course;
   }
 }

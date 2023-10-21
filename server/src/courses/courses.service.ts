@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCourseDto } from './course.dto';
+import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { CourseRepository } from './courses.repository';
 import { Course } from './course.entity';
 import { Member } from 'src/members/member.entity';
@@ -21,6 +21,10 @@ export class CoursesService {
       throw new Error('Course not found');
     }
     return course;
+  }
+
+  updateCourse(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
+    return this.courseRepository.updateCourse(id, updateCourseDto);
   }
 
   createCourse(createCourseDto: CreateCourseDto): Promise<Course> {
