@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { MemberRepository } from './members.repository';
 import { CreateMemberDto, MemberByCourseAndUserDto } from './member.dto';
 import { Member } from './member.entity';
+import { Role } from './role.enum';
 
 @Injectable()
 export class MembersService {
@@ -39,5 +40,12 @@ export class MembersService {
   ): Promise<boolean> {
     const res = await this.memberRepository.findOneBy(memberByCourseAndUserDto);
     return !!res;
+  }
+
+  async isInstructorOrTA(
+    memberByCourseAndUserDto: MemberByCourseAndUserDto,
+  ): Promise<boolean> {
+    const res = await this.memberRepository.findOneBy(memberByCourseAndUserDto);
+    return res && (res.role === Role.TA || res.role === Role.INSTRUCTOR);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InviteRepository } from './invites.repository';
 import { Invite } from './invite.entity';
 import { CreateInviteDto } from './invite.dto';
@@ -12,8 +16,8 @@ export class InvitesService {
     private memberService: MembersService,
   ) {}
 
-  async getInviteById(id: string): Promise<Invite> {
-    const invite = await this.inviteRepository.findOneBy({ id });
+  async getInviteById(id: string, userId: string): Promise<Invite> {
+    const invite = await this.inviteRepository.findOneBy({ id, userId });
     if (!invite) {
       throw new NotFoundException('Invite not found');
     }
@@ -29,19 +33,38 @@ export class InvitesService {
 
   async batchCreateInvite(
     batchCreateInviteDto: CreateInviteDto[],
+    userId: string,
   ): Promise<Invite[]> {
-    return this.inviteRepository.batchCreateInvite(batchCreateInviteDto);
+    if (!batchCreateInviteDto.length) {
+      return [];
+    }
+    const courseId = batchCreateInviteDto[0].courseId;
+    const sameCourse = batchCreateInviteDto.every(
+      (invite) => invite.courseId === courseId,
+    );
+    if (!sameCourse) {
+      throw new ForbiddenException('All invites must be for the same course');
+    }
+    if (!(await this.memberService.isInstructorOrTA({ courseId, userId }))) {
+      throw new ForbiddenException('Only instructors or TAs can invite users');
+    }
+    return await this.inviteRepository.batchCreateInvite(batchCreateInviteDto);
   }
 
-  async acceptInvite(id: string): Promise<Member> {
-    // TODO: ensure current user is the invitee
-    const invite = await this.getInviteById(id);
+  async acceptInvite(inviteId: string, userId: string): Promise<Member> {
+    const invite = await this.getInviteById(inviteId, userId);
     const member = await this.memberService.createMember(invite);
-    await this.deleteInviteById(id);
+    await this.deleteInviteById(inviteId);
     return member;
   }
 
-  async getInvitesByCourse(courseId: string): Promise<Invite[]> {
+  async getInvitesByCourse(
+    courseId: string,
+    userId: string,
+  ): Promise<Invite[]> {
+    if (!(await this.memberService.isInstructorOrTA({ courseId, userId }))) {
+      throw new NotFoundException('Invites not found');
+    }
     return this.inviteRepository.findBy({ courseId });
   }
 }
