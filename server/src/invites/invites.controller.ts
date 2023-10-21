@@ -28,8 +28,12 @@ export class InvitesController {
   @Post()
   async batchCreateInvite(
     @Body() batchCreateInviteDto: BatchCreateInviteDto,
+    @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Invite[]> {
-    return this.inviteService.batchCreateInvite(batchCreateInviteDto.data);
+    return this.inviteService.batchCreateInvite(
+      batchCreateInviteDto.data,
+      currentUser.userId,
+    );
   }
 
   @Get('/:id/accept')
