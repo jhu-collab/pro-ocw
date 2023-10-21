@@ -57,7 +57,12 @@ export class CoursesController {
   updateCourse(
     @Param('id') id: string,
     @Body() updateCourseDto: UpdateCourseDto,
+    @CurrentUser() currentUser: CurrentUserInfo,
   ) {
-    return this.coursesService.updateCourse(id, updateCourseDto);
+    return this.coursesService.updateCourse(
+      id,
+      updateCourseDto,
+      currentUser.userId,
+    );
   }
 }

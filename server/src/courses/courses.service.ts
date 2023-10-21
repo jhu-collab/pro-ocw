@@ -1,5 +1,9 @@
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CourseRepository } from './courses.repository';
 import { Course } from './course.entity';
 import { MembersService } from 'src/members/members.service';
@@ -21,7 +25,18 @@ export class CoursesService {
     return course;
   }
 
-  updateCourse(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
+  async updateCourse(
+    id: string,
+    updateCourseDto: UpdateCourseDto,
+    userId: string,
+  ): Promise<Course> {
+    const isAllowed = await this.memberService.isInstructorOrTA({
+      courseId: id,
+      userId,
+    });
+    if (!isAllowed) {
+      throw new ForbiddenException('Not authorized to update coursebook');
+    }
     return this.courseRepository.updateCourse(id, updateCourseDto);
   }
 
