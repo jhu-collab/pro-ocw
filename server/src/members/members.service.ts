@@ -49,7 +49,7 @@ export class MembersService {
       throw new ForbiddenException('Only instructors or TAs can remove users');
     }
     const res = await this.memberRepository.delete(memberByCourseAndUserDto);
-    if (res.affected) {
+    if (res.affected === 0) {
       throw new NotFoundException('Member not found');
     }
   }
@@ -66,5 +66,12 @@ export class MembersService {
   ): Promise<boolean> {
     const res = await this.memberRepository.findOneBy(memberByCourseAndUserDto);
     return res && (res.role === Role.TA || res.role === Role.INSTRUCTOR);
+  }
+
+  async isInstructor(
+    memberByCourseAndUserDto: MemberByCourseAndUserDto,
+  ): Promise<boolean> {
+    const res = await this.memberRepository.findOneBy(memberByCourseAndUserDto);
+    return res && res.role === Role.INSTRUCTOR;
   }
 }

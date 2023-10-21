@@ -2,7 +2,15 @@ import { Member } from 'src/members/member.entity';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { Course } from './course.entity';
 import { CoursesService } from './courses.service';
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/users/get-user-decorator';
 import { CurrentUserInfo } from 'src/users/user.dto';
@@ -64,5 +72,13 @@ export class CoursesController {
       updateCourseDto,
       currentUser.userId,
     );
+  }
+
+  @Delete('/:id')
+  deleteCourse(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: CurrentUserInfo,
+  ) {
+    return this.coursesService.deleteCourse(id, currentUser.userId);
   }
 }

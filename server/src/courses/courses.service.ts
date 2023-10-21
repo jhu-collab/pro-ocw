@@ -53,4 +53,21 @@ export class CoursesService {
     });
     return course;
   }
+
+  async deleteCourse(courseId: string, userId: string): Promise<void> {
+    const isAllowed = await this.memberService.isInstructor({
+      courseId,
+      userId,
+    });
+
+    if (!isAllowed) {
+      throw new ForbiddenException('Not authorized to update coursebook');
+    }
+
+    const result = await this.courseRepository.delete(courseId);
+
+    if (result.affected === 0) {
+      throw new NotFoundException('Course not found');
+    }
+  }
 }

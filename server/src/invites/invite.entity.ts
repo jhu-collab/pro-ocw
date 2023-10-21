@@ -35,9 +35,15 @@ export class Invite {
   @Column()
   public courseId: string;
 
-  @ManyToOne(() => User, (user) => user.invites)
+  @ManyToOne(() => User, (user) => user.invites, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   public user: User;
 
-  @ManyToOne(() => Course, (course) => course.invites)
+  @ManyToOne(() => Course, (course) => course.invites, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   public course: Course;
 }

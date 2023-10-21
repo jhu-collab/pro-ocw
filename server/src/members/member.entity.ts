@@ -26,9 +26,15 @@ export class Member {
   @Column()
   public courseId: string;
 
-  @ManyToOne(() => User, (user) => user.members)
+  @ManyToOne(() => User, (user) => user.members, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   public user: User;
 
-  @ManyToOne(() => Course, (course) => course.members)
+  @ManyToOne(() => Course, (course) => course.members, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   public course: Course;
 }
