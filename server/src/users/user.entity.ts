@@ -7,13 +7,16 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column({ length: 100 })
+  @Column({ length: 100, nullable: true })
   public fullName: string;
 
   @Column({ unique: true })
   public email: string;
 
   @Column()
+  password: string;
+
+  @Column({ nullable: false, default: false })
   public hasOnboarded: boolean;
 
   @Column('jsonb', { nullable: false, default: {} })
