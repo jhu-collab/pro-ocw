@@ -6,11 +6,17 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/users/get-user-decorator';
 import { CurrentUserInfo } from 'src/users/user.dto';
+import { InvitesService } from 'src/invites/invites.service';
+import { MembersService } from 'src/members/members.service';
 
 @ApiTags('courses')
 @Controller('courses')
 export class CoursesController {
-  constructor(private coursesService: CoursesService) {}
+  constructor(
+    private coursesService: CoursesService,
+    private invitesService: InvitesService,
+    private membersService: MembersService,
+  ) {}
 
   @Get('/:id')
   getCourse(
@@ -36,7 +42,7 @@ export class CoursesController {
     @Param('id') id: string,
     @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Member[]> {
-    return this.coursesService.getMembers(id, currentUser.userId);
+    return this.membersService.getMembersByCourse(id, currentUser.userId);
   }
 
   @Get('/:id/invites')
@@ -44,6 +50,6 @@ export class CoursesController {
     @Param('id') id: string,
     @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Member[]> {
-    return this.coursesService.getInvites(id, currentUser.userId);
+    return this.invitesService.getInvitesByCourse(id, currentUser.userId);
   }
 }
