@@ -3,7 +3,9 @@ import { InvitesService } from './invites.service';
 import { Invite } from './invite.entity';
 import { BatchCreateInviteDto } from './invite.dto';
 import { Member } from 'src/members/member.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('invites')
 @Controller('invites')
 export class InvitesController {
   constructor(private inviteService: InvitesService) {}

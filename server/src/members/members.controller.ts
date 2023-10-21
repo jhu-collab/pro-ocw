@@ -2,7 +2,9 @@ import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { Member } from './member.entity';
 import { MemberByCourseAndUserDto } from './member.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('members')
 @Controller('members')
 export class MembersController {
   constructor(private membersService: MembersService) {}
