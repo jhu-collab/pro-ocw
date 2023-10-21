@@ -15,6 +15,14 @@ export class CoursesService {
     private inviteService: InvitesService,
   ) {}
 
+  async getCourse(id: string): Promise<Course> {
+    const course = await this.courseRepository.findOneBy({ id });
+    if (!course) {
+      throw new Error('Course not found');
+    }
+    return course;
+  }
+
   createCourse(createCourseDto: CreateCourseDto): Promise<Course> {
     return this.courseRepository.createCourse(createCourseDto);
   }

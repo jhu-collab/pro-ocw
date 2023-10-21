@@ -16,6 +16,8 @@ Create a file named `.env.dev` in the root directory by copying the `.env.exampl
 
 ## Running the app
 
+$ yarn install
+
 ```bash
 # development
 $ yarn run start

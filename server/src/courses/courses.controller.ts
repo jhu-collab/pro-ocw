@@ -10,6 +10,11 @@ import { ApiTags } from '@nestjs/swagger';
 export class CoursesController {
   constructor(private coursesService: CoursesService) {}
 
+  @Get('/:id')
+  getCourse(@Param('id') id: string): Promise<Course> {
+    return this.coursesService.getCourse(id);
+  }
+
   @Post()
   createCourse(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
     return this.coursesService.createCourse(createCourseDto);
