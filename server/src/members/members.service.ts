@@ -8,7 +8,7 @@ export class MembersService {
   constructor(private memberRepository: MemberRepository) {}
 
   async createMember(createMemberDto: CreateMemberDto): Promise<Member> {
-    return this.memberRepository.createMember(createMemberDto);
+    return await this.memberRepository.createMember(createMemberDto);
   }
 
   async getMembersByCourse(courseId: string): Promise<Member[]> {
@@ -32,5 +32,12 @@ export class MembersService {
     if (res.affected) {
       throw new NotFoundException('Member not found');
     }
+  }
+
+  async isMember(
+    memberByCourseAndUserDto: MemberByCourseAndUserDto,
+  ): Promise<boolean> {
+    const res = await this.memberRepository.findOneBy(memberByCourseAndUserDto);
+    return !!res;
   }
 }
