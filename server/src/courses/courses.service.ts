@@ -8,12 +8,15 @@ import { CourseRepository } from './courses.repository';
 import { Course } from './course.entity';
 import { MembersService } from 'src/members/members.service';
 import { Role } from 'src/members/role.enum';
+import { User } from 'src/users/user.entity';
+import { UserRepository } from 'src/users/users.repository';
 
 @Injectable()
 export class CoursesService {
   constructor(
     private courseRepository: CourseRepository,
     private memberService: MembersService,
+    private userRepository: UserRepository,
   ) {}
 
   async getCourse(courseId: string, userId: string): Promise<Course> {
@@ -69,5 +72,17 @@ export class CoursesService {
     if (result.affected === 0) {
       throw new NotFoundException('Course not found');
     }
+  }
+
+  async getUsersByCourseId(courseId: string, userId: string): Promise<User[]> {
+    const isMember = await this.memberService.isMember({
+      courseId,
+      userId,
+    });
+    if (!isMember) {
+      throw new NotFoundException('Course not found');
+    }
+
+    return this.userRepository.getUsersByCourseId(courseId);
   }
 }

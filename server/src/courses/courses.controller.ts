@@ -81,4 +81,12 @@ export class CoursesController {
   ) {
     return this.coursesService.deleteCourse(id, currentUser.userId);
   }
+
+  @Get('/:id/users')
+  getUsersByCourseId(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: CurrentUserInfo,
+  ) {
+    return this.coursesService.getUsersByCourseId(id, currentUser.userId);
+  }
 }
