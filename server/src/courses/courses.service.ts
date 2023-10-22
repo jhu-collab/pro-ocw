@@ -18,7 +18,6 @@ export class CoursesService {
   constructor(
     private courseRepository: CourseRepository,
     private memberService: MembersService,
-
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
   ) {}
