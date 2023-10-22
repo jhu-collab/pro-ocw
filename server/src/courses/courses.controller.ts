@@ -93,4 +93,12 @@ export class CoursesController {
       currentUser.userId,
     );
   }
+
+  @Get('/:id/users')
+  getUsersByCourseId(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: CurrentUserInfo,
+  ) {
+    return this.coursesService.getUsersByCourseId(id, currentUser.userId);
+  }
 }

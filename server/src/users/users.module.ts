@@ -10,6 +10,6 @@ import { InvitesModule } from 'src/invites/invites.module';
   imports: [TypeOrmModule.forFeature([User]), InvitesModule],
   controllers: [UsersController],
   providers: [UserRepository, UsersService],
-  exports: [UsersService],
+  exports: [UsersService, UserRepository],
 })
 export class UsersModule {}

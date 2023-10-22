@@ -28,4 +28,14 @@ export class UserRepository extends Repository<User> {
       }
     }
   }
+
+  async getUsersByCourseId(courseId: string): Promise<User[]> {
+    const query = this.createQueryBuilder('member')
+      .leftJoinAndSelect('member.courseId', 'course.id')
+      // .leftJoinAndSelect('members.user', 'user')
+      .where('course.id = :courseId', { courseId });
+    console.log(query.getSql());
+    const users = await query.getMany();
+    return users;
+  }
 }
