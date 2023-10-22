@@ -3,6 +3,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { AuthCredentialsDto } from 'src/auth/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './user.dto';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -37,5 +38,16 @@ export class UserRepository extends Repository<User> {
     console.log(query.getSql());
     const users = await query.getMany();
     return users;
+  }
+
+  async updateUser(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    const user = await this.save({
+      id: userId,
+      ...updateUserDto,
+    });
+    return user;
   }
 }
