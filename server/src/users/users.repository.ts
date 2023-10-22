@@ -30,12 +30,10 @@ export class UserRepository extends Repository<User> {
   }
 
   async getUsersByCourseId(courseId: string): Promise<User[]> {
-    const query = this.createQueryBuilder('member')
-      .leftJoinAndSelect('member.courseId', 'course.id')
-      // .leftJoinAndSelect('members.user', 'user')
-      .where('course.id = :courseId', { courseId });
-    console.log(query.getSql());
-    const users = await query.getMany();
-    return users;
+    const query = this.createQueryBuilder('user');
+    query.leftJoin('user.members', 'member');
+    query.leftJoin('member.course', 'course');
+    query.where('course.id = :courseId', { courseId });
+    return await query.getMany();
   }
 }
