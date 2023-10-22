@@ -14,9 +14,11 @@ export class MembersController {
   @Get('/users/:userId/courses/:courseId')
   getMemberByCourseAndUser(
     @Param() memberByCourseAndUserDto: MemberByCourseAndUserDto,
+    @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Member> {
     return this.membersService.getMemberByCourseAndUser(
       memberByCourseAndUserDto,
+      currentUser.userId,
     );
   }
 

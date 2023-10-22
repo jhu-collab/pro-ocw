@@ -16,6 +16,7 @@ import { CurrentUser } from 'src/users/get-user-decorator';
 import { CurrentUserInfo } from 'src/users/user.dto';
 import { InvitesService } from 'src/invites/invites.service';
 import { MembersService } from 'src/members/members.service';
+import { InviteByCourseAndUserDto } from 'src/invites/invite.dto';
 
 @ApiTags('courses')
 @Controller('courses')
@@ -80,5 +81,16 @@ export class CoursesController {
     @CurrentUser() currentUser: CurrentUserInfo,
   ) {
     return this.coursesService.deleteCourse(id, currentUser.userId);
+  }
+
+  @Get('/:courseId/invites/users/:userId')
+  getInviteByCourseAndUser(
+    @Param() inviteByCourseAndUserDto: InviteByCourseAndUserDto,
+    @CurrentUser() currentUser: CurrentUserInfo,
+  ): Promise<Member> {
+    return this.invitesService.getInviteByCourseAndUser(
+      inviteByCourseAndUserDto,
+      currentUser.userId,
+    );
   }
 }

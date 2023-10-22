@@ -28,3 +28,11 @@ export class BatchCreateInviteDto {
   @Type(() => CreateInviteDto)
   data: CreateInviteDto[];
 }
+
+export class InviteByCourseAndUserDto {
+  @IsUUID()
+  userId: string;
+
+  @IsUUID()
+  courseId: string;
+}

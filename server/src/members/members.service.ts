@@ -29,7 +29,15 @@ export class MembersService {
 
   async getMemberByCourseAndUser(
     memberByCourseAndUserDto: MemberByCourseAndUserDto,
+    userId: string,
   ): Promise<Member> {
+    const isInstructorOrTA = await this.isInstructorOrTA({
+      courseId: memberByCourseAndUserDto.courseId,
+      userId,
+    });
+    if (!isInstructorOrTA && userId !== memberByCourseAndUserDto.userId) {
+      throw new ForbiddenException('Only instructors or TAs can get member');
+    }
     const res = await this.memberRepository.findOneBy(memberByCourseAndUserDto);
     if (!res) {
       throw new NotFoundException('Member not found');
