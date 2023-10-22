@@ -1,22 +1,26 @@
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { CourseRepository } from './courses.repository';
 import { Course } from './course.entity';
 import { MembersService } from 'src/members/members.service';
 import { Role } from 'src/members/role.enum';
+import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/user.entity';
-import { UserRepository } from 'src/users/users.repository';
 
 @Injectable()
 export class CoursesService {
   constructor(
     private courseRepository: CourseRepository,
     private memberService: MembersService,
-    private userRepository: UserRepository,
+
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
   ) {}
 
   async getCourse(courseId: string, userId: string): Promise<Course> {
@@ -83,6 +87,10 @@ export class CoursesService {
       throw new NotFoundException('Course not found');
     }
 
-    return this.userRepository.getUsersByCourseId(courseId);
+    return this.usersService.getUsersByCourseId(courseId);
+  }
+
+  getCoursesByUserId(userId: string): Promise<Course[]> {
+    return this.courseRepository.getCoursesByUserId(userId);
   }
 }

@@ -34,4 +34,12 @@ export class CourseRepository extends Repository<Course> {
     });
     return course;
   }
+
+  async getCoursesByUserId(userId: string): Promise<Course[]> {
+    const query = this.createQueryBuilder('course');
+    query.leftJoin('course.members', 'member');
+    query.leftJoin('member.user', 'user');
+    query.where('user.id = :userId', { userId });
+    return await query.getMany();
+  }
 }
