@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InviteRepository } from './invites.repository';
 import { Invite } from './invite.entity';
-import { CreateInviteDto } from './invite.dto';
+import { CreateInviteDto, InviteByCourseAndUserDto } from './invite.dto';
 import { Member } from 'src/members/member.entity';
 import { MembersService } from 'src/members/members.service';
 
@@ -66,5 +66,35 @@ export class InvitesService {
       throw new NotFoundException('Invites not found');
     }
     return this.inviteRepository.findBy({ courseId });
+  }
+
+  async getInviteByCourseAndUser(
+    inviteByCourseAndUserDto: InviteByCourseAndUserDto,
+    userId: string,
+  ) {
+    const isInstructorOrTA = await this.memberService.isInstructorOrTA({
+      courseId: inviteByCourseAndUserDto.courseId,
+      userId,
+    });
+    if (!isInstructorOrTA && userId !== inviteByCourseAndUserDto.userId) {
+      throw new ForbiddenException('Not authorized to view invite');
+    }
+    const invite = await this.inviteRepository.findOneBy(
+      inviteByCourseAndUserDto,
+    );
+    if (!invite) {
+      throw new NotFoundException('Invite not found');
+    }
+    return invite;
+  }
+
+  async getInvitesByUserId(
+    userId: string,
+    currentUserId: string,
+  ): Promise<Invite[]> {
+    if (userId !== currentUserId) {
+      throw new NotFoundException('Invites not found');
+    }
+    return await this.inviteRepository.findBy({ userId });
   }
 }
