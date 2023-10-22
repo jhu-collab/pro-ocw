@@ -1,25 +1,19 @@
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import {
   ForbiddenException,
-  Inject,
   Injectable,
   NotFoundException,
-  forwardRef,
 } from '@nestjs/common';
 import { CourseRepository } from './courses.repository';
 import { Course } from './course.entity';
 import { MembersService } from 'src/members/members.service';
 import { Role } from 'src/members/role.enum';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class CoursesService {
   constructor(
     private courseRepository: CourseRepository,
     private memberService: MembersService,
-    @Inject(forwardRef(() => UsersService))
-    private usersService: UsersService,
   ) {}
 
   async getCourse(courseId: string, userId: string): Promise<Course> {
@@ -77,19 +71,14 @@ export class CoursesService {
     }
   }
 
-  async getUsersByCourseId(courseId: string, userId: string): Promise<User[]> {
-    const isMember = await this.memberService.isMember({
-      courseId,
-      userId,
-    });
-    if (!isMember) {
-      throw new NotFoundException('Course not found');
+  async getCoursesByUserId(
+    userId: string,
+    currentUserId: string,
+  ): Promise<Course[]> {
+    if (userId !== currentUserId) {
+      throw new Error('Not authorized to get courses for user');
     }
 
-    return this.usersService.getUsersByCourseId(courseId);
-  }
-
-  getCoursesByUserId(userId: string): Promise<Course[]> {
     return this.courseRepository.getCoursesByUserId(userId);
   }
 }

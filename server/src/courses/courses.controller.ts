@@ -17,6 +17,7 @@ import { CurrentUserInfo } from 'src/users/user.dto';
 import { InvitesService } from 'src/invites/invites.service';
 import { MembersService } from 'src/members/members.service';
 import { InviteByCourseAndUserDto } from 'src/invites/invite.dto';
+import { UsersService } from 'src/users/users.service';
 
 @ApiTags('courses')
 @Controller('courses')
@@ -25,6 +26,7 @@ export class CoursesController {
     private coursesService: CoursesService,
     private invitesService: InvitesService,
     private membersService: MembersService,
+    private usersService: UsersService,
   ) {}
 
   @Get('/:id')
@@ -99,6 +101,6 @@ export class CoursesController {
     @Param('id') id: string,
     @CurrentUser() currentUser: CurrentUserInfo,
   ) {
-    return this.coursesService.getUsersByCourseId(id, currentUser.userId);
+    return this.usersService.getUsersByCourseId(id, currentUser.userId);
   }
 }
