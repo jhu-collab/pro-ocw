@@ -15,9 +15,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOne(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
-      return result;
+      return user;
     }
     return null;
   }
@@ -38,8 +36,6 @@ export class AuthService {
     if (!found) {
       throw new NotFoundException('User not found');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = found;
-    return result;
+    return found;
   }
 }

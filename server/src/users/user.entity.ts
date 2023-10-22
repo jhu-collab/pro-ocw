@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Invite } from 'src/invites/invite.entity';
 import { Member } from 'src/members/member.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -13,6 +14,7 @@ export class User {
   @Column({ unique: true })
   public email: string;
 
+  @Exclude()
   @Column()
   password: string;
 

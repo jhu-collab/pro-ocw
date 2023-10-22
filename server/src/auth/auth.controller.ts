@@ -32,11 +32,6 @@ export class AuthController {
     return this.authService.signUp(authCredentialsDto);
   }
 
-  @Get('profile')
-  getProfile(@CurrentUser() user: CurrentUserInfo) {
-    return user;
-  }
-
   @Get('current-user')
   getCurrentUser(@CurrentUser() user: CurrentUserInfo) {
     return this.authService.getCurrentUser(user);
