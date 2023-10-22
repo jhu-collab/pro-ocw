@@ -9,7 +9,7 @@ import {
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthCredentialsDto } from './auth-credentials.dto';
 import { AuthService } from './auth.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/users/get-user-decorator';
 import { CurrentUserInfo } from 'src/users/user.dto';
 import { Public } from './public-decorator';
@@ -19,6 +19,7 @@ import { Public } from './public-decorator';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiBody({ type: AuthCredentialsDto })
   @UseGuards(LocalAuthGuard)
   @Public()
   @Post('signin')
