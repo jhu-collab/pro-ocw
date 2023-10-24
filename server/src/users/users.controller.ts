@@ -35,6 +35,17 @@ export class UsersController {
     return this.inviteService.getInvitesByUserId(userId, currentUser.userId);
   }
 
+  @Get('/:userId/invited-courses')
+  getUserInvitedCourses(
+    @Param('userId') userId: string,
+    @CurrentUser() currentUser: CurrentUserInfo,
+  ): Promise<Course[]> {
+    return this.courseService.getInvitedCoursesByUserId(
+      userId,
+      currentUser.userId,
+    );
+  }
+
   @Get('/:userId/courses')
   getUserCourses(
     @Param('userId') userId: string,

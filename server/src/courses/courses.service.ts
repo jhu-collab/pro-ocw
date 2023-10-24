@@ -25,6 +25,17 @@ export class CoursesService {
     return course;
   }
 
+  async getInvitedCoursesByUserId(
+    userId: string,
+    currentUserId: string,
+  ): Promise<Course[]> {
+    if (userId !== currentUserId) {
+      throw new Error('Not authorized to get invited courses for user');
+    }
+
+    return this.courseRepository.getInvitedCoursesByUserId(userId);
+  }
+
   async updateCourse(
     id: string,
     updateCourseDto: UpdateCourseDto,
