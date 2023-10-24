@@ -42,4 +42,12 @@ export class CourseRepository extends Repository<Course> {
     query.where('user.id = :userId', { userId });
     return await query.getMany();
   }
+
+  async getInvitedCoursesByUserId(userId: string): Promise<Course[]> {
+    const query = this.createQueryBuilder('course');
+    query.leftJoin('course.invites', 'invite');
+    query.leftJoin('invite.user', 'user');
+    query.where('user.id = :userId', { userId });
+    return await query.getMany();
+  }
 }
