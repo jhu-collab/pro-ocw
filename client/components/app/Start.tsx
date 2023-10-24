@@ -13,18 +13,19 @@ import { useRouter } from "next/navigation";
 import IconCircle from "./IconCircle";
 import Logo from "./Logo";
 import Testimonial from "./Testimonial";
-import { useSupabase } from "@/providers/supabase-provider";
+import { Course, Invite } from "@/types/types";
 
 export default function Start({
-  teams,
+  courses,
   invites,
-  teamsFromInvites,
+  coursesFromInvites,
 }: {
-  teams: Team[];
+  courses: Course[];
   invites: Invite[];
-  teamsFromInvites: Team[];
+  coursesFromInvites: Course[];
 }) {
-  const { supabase } = useSupabase();
+  const router = useRouter();
+
   return (
     <div className="flex h-full flex-col">
       <div className="flex flex-auto overflow-y-auto">
@@ -40,11 +41,11 @@ export default function Start({
             </div>
             <div className="flex flex-col space-y-6">
               <WorkspaceCard />
-              {teams.length > 0 && <TeamList teams={teams} />}
-              {teamsFromInvites.length > 0 && (
+              {courses.length > 0 && <CourseList courses={courses} />}
+              {coursesFromInvites.length > 0 && (
                 <InviteList
                   invites={invites}
-                  teamsFromInvites={teamsFromInvites}
+                  coursesFromInvites={coursesFromInvites}
                 />
               )}
             </div>
@@ -52,7 +53,7 @@ export default function Start({
               <Button
                 variant={"outline"}
                 onClick={async () => {
-                  await supabase.auth.signOut();
+                  router.push("/api/auth/signout");
                 }}
               >
                 Sign Out
@@ -78,7 +79,7 @@ const WorkspaceCard = () => {
       <CardHeader>
         <CardTitle>Create a new workspace</CardTitle>
         <CardDescription>
-          Start a new workspace for your team, project, or organization.
+          Start a new workspace for your course, project, or organization.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -88,20 +89,20 @@ const WorkspaceCard = () => {
   );
 };
 
-const TeamList = ({ teams }: { teams: Team[] }) => (
+const CourseList = ({ courses }: { courses: Course[] }) => (
   <Card>
     <CardHeader>
-      <CardTitle>Your Teams</CardTitle>
+      <CardTitle>Your courses</CardTitle>
       <CardDescription>Launch your workspace to get started.</CardDescription>
     </CardHeader>
     <CardContent>
-      {teams.map((team) => (
+      {courses.map((course) => (
         <Link
-          href={`/${team.id}`}
-          key={team.id}
+          href={`/${course.id}`}
+          key={course.id}
           className="flex justify-between items-center p-3 border-b hover:bg-gray-100 cursor-pointer"
         >
-          <span>{team.name}</span>
+          <span>{course.name}</span>
           <ChevronRightIcon />
         </Link>
       ))}
@@ -111,10 +112,10 @@ const TeamList = ({ teams }: { teams: Team[] }) => (
 
 const InviteList = ({
   invites,
-  teamsFromInvites,
+  coursesFromInvites,
 }: {
   invites: Invite[];
-  teamsFromInvites: Team[];
+  coursesFromInvites: Course[];
 }) => (
   <Card>
     <CardHeader>
@@ -122,8 +123,8 @@ const InviteList = ({
       <CardDescription>Check out your invitations</CardDescription>
     </CardHeader>
     <CardContent>
-      {teamsFromInvites.map((team) => {
-        const invite = invites.find((invite) => invite.team_id === team.id);
+      {/* {coursesFromInvites.map((course) => {
+        const invite = invites.find((invite) => invite.course_id === course.id);
 
         if (!invite) return null;
 
@@ -133,11 +134,11 @@ const InviteList = ({
             key={invite.id}
             className="flex justify-between items-center p-3 border-b hover:bg-gray-100 cursor-pointer"
           >
-            <span>{team.name}</span>
+            <span>{course.name}</span>
             <ChevronRightIcon />
           </Link>
         );
-      })}
+      })} */}
     </CardContent>
   </Card>
 );

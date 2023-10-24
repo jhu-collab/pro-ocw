@@ -1,6 +1,4 @@
-import { Database } from "@/types/supabase";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { getUser } from "@/lib/server";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -10,20 +8,10 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient<Database>({
-    cookies,
-  });
+  const user = await getUser();
 
-  const session = await supabase.auth.getSession();
-
-  if (!session?.data?.session) {
-    return redirect("/signin");
-  }
-
-  const email = session.data.session.user?.email;
-
-  if (!email) {
-    return redirect("/signin");
+  if (!user) {
+    redirect("/signin");
   }
 
   return <div>{children}</div>;

@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useState } from "react";
-import { api } from "@/lib/api";
 import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -25,22 +25,23 @@ export default function SignInPage() {
       }
 
       setIsLoading(true);
-      
+
       try {
-        await api.post("/auth/signin", { email, password });
+        const { data } = await axios.post("/api/auth/signin", {
+          email,
+          password,
+        });
+        if (data) {
+          router.push("/start");
+        }
       } catch (error) {
-        
         setIsLoading(false);
-        
+
         toast({
           title: "Error",
           description: "Invalid email or password",
         });
       }
-
-      setIsLoading(false);
-      // router.push("/check");
-      
     },
     [email, password, toast, router]
   );
@@ -51,8 +52,7 @@ export default function SignInPage() {
 
   const updatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    console.log(password)
-  }
+  };
 
   return (
     <div className="flex h-full flex-col items-center justify-center">
