@@ -5,7 +5,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TransformInterceptor } from './users/transformer-interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: 'http://localhost:3000',
+      credentials: true,
+    },
+  });
   const config = new DocumentBuilder()
     .setTitle('OCW API')
     .setVersion('1.0')

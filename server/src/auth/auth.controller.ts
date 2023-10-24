@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
   Request,
   UseGuards,
@@ -22,6 +23,7 @@ export class AuthController {
   @ApiBody({ type: AuthCredentialsDto })
   @UseGuards(LocalAuthGuard)
   @Public()
+  @HttpCode(200)
   @Post('signin')
   async signIn(@Request() req): Promise<{ access_token: string }> {
     return this.authService.signIn(req.user);
