@@ -3,16 +3,18 @@
 import Logo from "@/components/app/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSupabase } from "@/providers/supabase-provider";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useState } from "react";
+import { api } from "@/lib/api";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function SignInPage() {
-  const { supabase } = useSupabase();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { toast } = useToast();
 
   const handleSignInWithEmail = useCallback(
     async (e: FormEvent) => {
@@ -23,36 +25,41 @@ export default function SignInPage() {
       }
 
       setIsLoading(true);
-
-      const { data, error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${location.origin}/callback`,
-        },
-      });
-
-      if (error) {
-        console.error(error);
-        return;
+      
+      try {
+        await api.post("/auth/signin", { email, password });
+      } catch (error) {
+        
+        setIsLoading(false);
+        
+        toast({
+          title: "Error",
+          description: "Invalid email or password",
+        });
       }
 
       setIsLoading(false);
-
-      router.push("/check");
+      // router.push("/check");
+      
     },
-    [email, router, supabase]
+    [email, password, toast, router]
   );
 
   const updateEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value.toLowerCase());
   };
 
+  const updatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    console.log(password)
+  }
+
   return (
     <div className="flex h-full flex-col items-center justify-center">
       <div className="mx-auto flex w-full max-w-sm flex-col items-center space-y-4 px-4">
         <Logo className="" variant="logo" />
-        <h1 className="text-3xl font-semibold">Log in or sign up</h1>
-        <p className="text-lg text-gray-500">Welcome to Demorepo</p>
+        <h1 className="text-3xl font-semibold">Sign in</h1>
+        <p className="text-lg text-gray-500">Welcome to Open Coursebook</p>
         <form
           className="flex w-full flex-col space-y-4"
           onSubmit={handleSignInWithEmail}
@@ -70,9 +77,24 @@ export default function SignInPage() {
               onChange={updateEmail}
             />
           </div>
+
+          <div className="flex flex-col">
+            <label className="mb-2 font-medium" htmlFor="password">
+              Password
+            </label>
+            <Input
+              className=""
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={updatePassword}
+            />
+          </div>
+
           <Button className="w-full" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Email sign in link
+            Sign in
           </Button>
         </form>
       </div>
