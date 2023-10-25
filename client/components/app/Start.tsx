@@ -123,8 +123,8 @@ const InviteList = ({
       <CardDescription>Check out your invitations</CardDescription>
     </CardHeader>
     <CardContent>
-      {/* {coursesFromInvites.map((course) => {
-        const invite = invites.find((invite) => invite.course_id === course.id);
+      {coursesFromInvites.map((course) => {
+        const invite = invites.find((invite) => invite.courseId === course.id);
 
         if (!invite) return null;
 
@@ -138,7 +138,7 @@ const InviteList = ({
             <ChevronRightIcon />
           </Link>
         );
-      })} */}
+      })}
     </CardContent>
   </Card>
 );

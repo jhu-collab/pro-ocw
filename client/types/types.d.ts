@@ -1,4 +1,5 @@
 export type Semester = "FALL" | "SPRING" | "SUMMER" | "INTERSESSION";
+export type Role = "INSTRUCTOR" | "STUDENT" | "TA";
 
 export interface User {
   id: string;
@@ -23,6 +24,10 @@ export interface Course {
 export interface Invite {
   id: string;
   createdAt: string;
+  role: Role;
   joined: boolean;
+  email: string;  
   send: boolean;
+  userId: string;
+  courseId: string;
 }

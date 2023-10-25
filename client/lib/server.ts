@@ -46,3 +46,12 @@ export async function getInvites(userId: string): Promise<[Invite[], any]> {
     return [[], error];
   }
 }
+
+export async function getInvitedCourses(userId: string): Promise<[Course[], any]> {
+  try {
+    const { data } = await api.get(`/users/${userId}/invited-courses`);
+    return [data, null];
+  } catch (error: any) {
+    return [[], error];
+  }
+}
