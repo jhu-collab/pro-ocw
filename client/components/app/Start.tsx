@@ -40,7 +40,7 @@ export default function Start({
               </IconCircle>
             </div>
             <div className="flex flex-col space-y-6">
-              <WorkspaceCard />
+              <CourseCard />
               {courses.length > 0 && <CourseList courses={courses} />}
               {coursesFromInvites.length > 0 && (
                 <InviteList
@@ -71,19 +71,19 @@ export default function Start({
   );
 }
 
-const WorkspaceCard = () => {
+const CourseCard = () => {
   const router = useRouter();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create a new workspace</CardTitle>
+        <CardTitle>Create a new course</CardTitle>
         <CardDescription>
-          Start a new workspace for your course, project, or organization.
+          Create a new course for your students.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Button onClick={() => router.push("/create")}>Create Workspace</Button>
+        <Button onClick={() => router.push("/create")}>Create Course</Button>
       </CardContent>
     </Card>
   );
@@ -93,7 +93,7 @@ const CourseList = ({ courses }: { courses: Course[] }) => (
   <Card>
     <CardHeader>
       <CardTitle>Your courses</CardTitle>
-      <CardDescription>Launch your workspace to get started.</CardDescription>
+      <CardDescription>Launch your course to get started.</CardDescription>
     </CardHeader>
     <CardContent>
       {courses.map((course) => (

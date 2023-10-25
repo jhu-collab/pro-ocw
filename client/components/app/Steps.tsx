@@ -1,18 +1,25 @@
 "use client";
-import { Loader2 } from "lucide-react";
 import type { FormEvent } from "react";
 import { useCallback, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import IconCircle from "./IconCircle";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Role, ROLES } from "@/constants";
 
 export type StepProps = {
   title: string;
-  fieldType: "text";
+  fieldType: "text" | "dropdown";
   placeholder: string;
-  onSubmit?: (value: string) => Promise<void>;
-  loading?: boolean;
+  onSubmit?: (value: any) => Promise<void>;
   icon: React.ReactNode;
+  dropdownItems?: string[];
 };
 
 export default function Steps({
@@ -21,7 +28,7 @@ export default function Steps({
   fieldType,
   placeholder,
   onSubmit,
-  loading,
+  dropdownItems,
 }: StepProps) {
   const [input, setInput] = useState("");
   const step = { title, fieldType, placeholder };
@@ -53,8 +60,23 @@ export default function Steps({
             onChange={(e) => setInput(e.target.value)}
           />
         )}
-        <Button className="w-full" disabled={loading || !input}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {step.fieldType === "dropdown" && (
+          <Select onValueChange={(value) => setInput(value)} value={input}>
+            <SelectTrigger className="bg-white">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {dropdownItems!.map((r) => {
+                return (
+                  <SelectItem value={r} key={r}>
+                    {r}
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        )}
+        <Button className="w-full" disabled={!input}>
           Next
         </Button>
       </form>

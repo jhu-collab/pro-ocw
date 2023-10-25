@@ -20,14 +20,12 @@ export default async function StartPage() {
     console.error("Error fetching invited courses:", invitedCoursesError);
     return;
   }
-  console.log("invitedCourses", invitedCourses);
 
   const [invitesData, invitesError] = await getInvites(user!.id);
   if (invitesError) {
     console.error("Error fetching user invites:", invitesError);
     return;
   }
-  console.log("invitesData", invitesData);
 
   return (
     <div className="h-screen">

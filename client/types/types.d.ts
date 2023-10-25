@@ -21,6 +21,14 @@ export interface Course {
   courseCode: string;
 }
 
+export interface CreateCourse {
+  name: string;
+  coursebookId: string;
+  semester: Semester;
+  year: number;
+  courseCode: string;
+}
+
 export interface Invite {
   id: string;
   createdAt: string;
