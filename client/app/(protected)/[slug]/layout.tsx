@@ -1,3 +1,4 @@
+import { getUser } from "@/lib/server";
 import { Database } from "@/types/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -10,35 +11,10 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // setup supabase
-  const supabase = createServerComponentClient<Database>({ cookies });
-
-  // get user
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser();
 
   if (!user) {
     redirect("/signin");
-  }
-
-  // get user profile
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile) {
-    redirect("/signin");
-  }
-
-  // if user has not onboarded, redirect to onboarding
-
-  if (!profile.has_onboarded) {
-    redirect(`/onboarding`);
   }
 
   return <div>{children}</div>;

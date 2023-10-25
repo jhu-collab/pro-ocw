@@ -12,8 +12,9 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import TeamSelector from "./TeamSelector";
+import CourseSelector from "./CourseSelector";
 import UserProfileButton from "./UserProfileDropdown";
+import { Course, User } from "@/types/types";
 
 interface Step {
   id: string;
@@ -96,13 +97,13 @@ const Option = ({
 };
 
 export default function Sidebar({
-  team,
-  allTeams,
+  course,
+  allCourses,
   user,
 }: {
-  team: Team;
-  allTeams: Team[];
-  user: Profile;
+  course: Course;
+  allCourses: Course[];
+  user: User;
 }) {
   const pathname = usePathname();
 
@@ -114,10 +115,14 @@ export default function Sidebar({
     <nav className="flex h-full w-full flex-col border-r border-gray-200 bg-gray-100 py-4">
       <div className="flex h-full flex-col space-y-6 px-4">
         <Logo variant="wordmark" className="my-12" />
-        <TeamSelector team={team} allTeams={allTeams} />
+        <CourseSelector course={course} allCourses={allCourses} />
         <div className="flex cursor-pointer flex-col">
-          <Link href={`/${team.id}`}>
-            <Option title="Home" icon={Home} pathname={`/${team.id}`} />
+          <Link href={`/${course.coursebookId}`}>
+            <Option
+              title="Home"
+              icon={Home}
+              pathname={`/${course.coursebookId}`}
+            />
           </Link>
           <Collapsible
             open={settingsExpanded}
@@ -127,7 +132,7 @@ export default function Sidebar({
               <Option
                 title="Settings"
                 icon={Settings}
-                pathname="/[team]/settings"
+                pathname="/[course]/settings"
                 expansion={{
                   allowed: true,
                   expanded: settingsExpanded,
@@ -136,12 +141,17 @@ export default function Sidebar({
             </CollapsibleTrigger>
             <CollapsibleContent className="flex flex-col items-start pl-2">
               <Steps
-                activeStepId={pathname.replaceAll(`/${team.id}/settings/`, "")}
+                activeStepId={pathname.replaceAll(
+                  `/${course.coursebookId}/settings/`,
+                  ""
+                )}
                 steps={["General", "Members", "Billing"].map((pageName) => {
                   return {
                     id: pageName.toLowerCase(),
                     name: pageName,
-                    href: `/${team.id}/settings/${pageName.toLowerCase()}`,
+                    href: `/${
+                      course.coursebookId
+                    }/settings/${pageName.toLowerCase()}`,
                   };
                 })}
               />
@@ -151,7 +161,7 @@ export default function Sidebar({
       </div>
       <Separator className="m-4" />
       <div className="py-2 px-4">
-        <UserProfileButton team={team} user={user} />
+        <UserProfileButton course={course} user={user} />
       </div>
     </nav>
   );

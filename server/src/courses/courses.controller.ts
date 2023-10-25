@@ -10,6 +10,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/users/get-user-decorator';
@@ -28,6 +29,17 @@ export class CoursesController {
     private membersService: MembersService,
     private usersService: UsersService,
   ) {}
+
+  @Get()
+  getCourseByCoursebookId(
+    @Query('coursebookId') coursebookId: string,
+    @CurrentUser() currentUser: CurrentUserInfo,
+  ): Promise<Course> {
+    return this.coursesService.getCourseByCoursebookId(
+      coursebookId,
+      currentUser.userId,
+    );
+  }
 
   @Get('/:id')
   getCourse(

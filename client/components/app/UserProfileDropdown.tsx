@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useSupabase } from "@/providers/supabase-provider";
+import { Course, User } from "@/types/types";
 
 function MenuItem({
   children,
@@ -35,14 +36,14 @@ function MenuItem({
 
 export default function UserProfileButton({
   user,
-  team,
+  course,
 }: {
-  user: Profile;
-  team: Team;
+  user: User;
+  course: Course;
 }) {
   const router = useRouter();
   const { supabase } = useSupabase();
-  // const { team } = useTeam();
+  // const { course } = useTeam();
 
   const handleSignOut = useCallback(() => {
     supabase.auth.signOut();
@@ -55,12 +56,12 @@ export default function UserProfileButton({
           <div className="flex items-center space-x-2 text-left">
             <Avatar className="rounded-full">
               <AvatarFallback>
-                {user.full_name?.[0] ?? user.email?.[0] ?? ""}
+                {user.fullName?.[0] ?? user.email?.[0] ?? ""}
               </AvatarFallback>
               <AvatarImage src={undefined} />
             </Avatar>
             <div className="flex flex-col">
-              <p className="font-medium">{user.full_name}</p>
+              <p className="font-medium">{user.fullName}</p>
               <p>{user.email}</p>
             </div>
           </div>
@@ -72,7 +73,9 @@ export default function UserProfileButton({
         align="start"
         sideOffset={4}
       >
-        <MenuItem onClick={() => router.push(`/${team.id}/profile`)}>
+        <MenuItem
+          onClick={() => router.push(`/${course.coursebookId}/profile`)}
+        >
           <UserIcon className="w-4" />
           Profile
         </MenuItem>

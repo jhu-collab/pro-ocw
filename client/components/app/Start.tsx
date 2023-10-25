@@ -98,8 +98,8 @@ const CourseList = ({ courses }: { courses: Course[] }) => (
     <CardContent>
       {courses.map((course) => (
         <Link
-          href={`/${course.id}`}
-          key={course.id}
+          href={`/${course.coursebookId}`}
+          key={course.coursebookId}
           className="flex justify-between items-center p-3 border-b hover:bg-gray-100 cursor-pointer"
         >
           <span>{course.name}</span>

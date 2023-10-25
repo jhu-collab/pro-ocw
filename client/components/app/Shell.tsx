@@ -2,34 +2,35 @@
 import Sidebar from "@/components/app/Sidebar";
 import { Button } from "@/components/ui/button";
 import cn from "@/lib/cn";
+import { Course, User } from "@/types/types";
 import { ChevronRight, Menu } from "lucide-react";
 import { useState } from "react";
 
 export default function Shell({
-  team,
-  allTeams,
+  course,
+  allCourses,
   children,
   pageName,
   subpage,
   subtitle,
   childrenClassname,
-  profile,
+  user,
 }: {
-  team: Team;
-  allTeams: Team[];
+  course: Course;
+  allCourses: Course[];
   children: React.ReactNode;
   pageName: string;
   subpage?: string;
   subtitle: string;
   childrenClassname?: string;
-  profile: Profile;
+  user: User;
 }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen">
       <div className="hidden shrink-0 grow-0 md:block md:w-[320px]">
-        <Sidebar user={profile} team={team} allTeams={allTeams} />
+        <Sidebar user={user} course={course} allCourses={allCourses} />
       </div>
       {mobileSidebarOpen && (
         <>
@@ -38,7 +39,7 @@ export default function Shell({
             onClick={() => setMobileSidebarOpen(false)}
           />
           <div className="fixed inset-y-0 left-0 z-50 w-2/3 max-w-[320px] animate-slideRightAndFadeIn">
-            <Sidebar user={profile} team={team} allTeams={allTeams} />
+            <Sidebar user={user} course={course} allCourses={allCourses} />
           </div>
         </>
       )}

@@ -92,4 +92,27 @@ export class CoursesService {
 
     return this.courseRepository.getCoursesByUserId(userId);
   }
+
+  async getCourseByCoursebookId(
+    coursebookId: string,
+    userId: string,
+  ): Promise<Course> {
+    if (!coursebookId) {
+      throw new NotFoundException('Please provide a coursebook id');
+    }
+    const res = await this.courseRepository.findOneBy({
+      coursebookId,
+    });
+    if (!res) {
+      throw new NotFoundException('Course not found');
+    }
+    const isMember = await this.memberService.isMember({
+      courseId: res.id,
+      userId,
+    });
+    if (!isMember) {
+      throw new NotFoundException('Course not found');
+    }
+    return res;
+  }
 }

@@ -47,11 +47,47 @@ export async function getInvites(userId: string): Promise<[Invite[], any]> {
   }
 }
 
-export async function getInvitedCourses(userId: string): Promise<[Course[], any]> {
+export async function getInvitedCourses(
+  userId: string
+): Promise<[Course[], any]> {
   try {
     const { data } = await api.get(`/users/${userId}/invited-courses`);
     return [data, null];
   } catch (error: any) {
     return [[], error];
+  }
+}
+
+export async function getUserCourses(userId: string): Promise<[Course[], any]> {
+  try {
+    const { data } = await api.get(`/users/${userId}/courses`);
+    return [data, null];
+  } catch (error: any) {
+    return [[], error];
+  }
+}
+
+export async function getInviteForCourse(
+  userId: string,
+  courseId: string
+): Promise<[Invite | null, any]> {
+  try {
+    const { data } = await api.get(
+      `/courses/${courseId}/invites/users/${userId}`
+    );
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}
+
+export async function getCourseByCoursebookId(
+  coursebookId: string
+): Promise<[Course | null, any]> {
+  try {
+    const { data } = await api.get(`/courses?coursebookId=${coursebookId}`);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
   }
 }

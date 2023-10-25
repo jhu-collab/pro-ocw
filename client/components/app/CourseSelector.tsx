@@ -9,19 +9,20 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import CreateTeamModal from "./CreateTeamModal";
+import { Course } from "@/types/types";
 
 export default function TeamSelector({
-  team,
-  allTeams,
+  course,
+  allCourses,
 }: {
-  team: Team;
-  allTeams: Team[];
+  course: Course;
+  allCourses: Course[];
 }) {
   const router = useRouter();
 
-  const handleSelectTeam = useCallback(
-    async (team: Team) => {
-      await router.push(`/${team.id}`);
+  const handleSelectCourse = useCallback(
+    async (course: Course) => {
+      await router.push(`/${course.coursebookId}`);
     },
     [router]
   );
@@ -39,9 +40,9 @@ export default function TeamSelector({
           <button className="flex select-none items-center justify-between rounded-lg bg-white p-2 shadow-outline transition hover:shadow-md-outline">
             <div className="flex items-center space-x-2">
               <Avatar>
-                <AvatarFallback>{team?.name[0] ?? ""}</AvatarFallback>
+                <AvatarFallback>{course?.name[0] ?? ""}</AvatarFallback>
               </Avatar>
-              <p className="font-medium">{team?.name ?? "Loading"}</p>
+              <p className="font-medium">{course?.name ?? "Loading"}</p>
             </div>
             <ChevronDown className="w-4 text-gray-500" />
           </button>
@@ -51,22 +52,22 @@ export default function TeamSelector({
           align="start"
           sideOffset={4}
         >
-          {allTeams && allTeams.length > 0 && (
+          {allCourses && allCourses.length > 0 && (
             <div className="flex flex-col">
-              {allTeams.map((t) => {
-                const selected = t.id === team.id;
+              {allCourses.map((c) => {
+                const selected = c.id === course.id;
                 return (
                   <DropdownMenuItem
-                    key={t.id}
+                    key={c.id}
                     className="flex w-full items-center gap-x-2 px-3 py-2"
                     onClick={async () => {
-                      await handleSelectTeam(t);
+                      await handleSelectCourse(c);
                     }}
                   >
                     <Avatar>
-                      <AvatarFallback>{t.name[0]}</AvatarFallback>
+                      <AvatarFallback>{c.name[0]}</AvatarFallback>
                     </Avatar>
-                    <p className="">{t.name}</p>
+                    <p className="">{c.name}</p>
                     {selected && <Check className="w-4" />}
                   </DropdownMenuItem>
                 );
@@ -80,7 +81,7 @@ export default function TeamSelector({
             }}
           >
             <Plus className="mx-3 w-4" />
-            Create team
+            Create course
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
