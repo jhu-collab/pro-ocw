@@ -1,29 +1,30 @@
+import { Course, User } from "@/types/types";
 import Shell from "./Shell";
 
 export default function SettingsShell({
-  allTeams,
-  team,
+  allCourses,
+  course,
   children,
   title,
   description,
-  profile,
+  user,
 }: {
-  allTeams: Team[];
-  team: Team;
+  allCourses: Course[];
+  course: Course;
   children: React.ReactNode;
   title: string;
   description: string;
-  profile: Profile;
+  user: User;
 }) {
   return (
     <Shell
-      team={team}
-      allTeams={allTeams}
+      course={course}
+      allCourses={allCourses}
       pageName="Settings"
       subpage={title}
       subtitle={description}
       childrenClassname="max-w-5xl"
-      profile={profile}
+      user={user}
     >
       <div className="mx-auto grid h-full w-full">
         <div className="py-4">{children}</div>

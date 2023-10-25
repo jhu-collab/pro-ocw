@@ -1,6 +1,6 @@
 // API used by client components
 
-import { Course, CreateCourse } from "@/types/types";
+import { Course, CreateCourse, UpdateUser } from "@/types/types";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -27,6 +27,18 @@ export async function createCourse(
 ): Promise<[Course | null, any]> {
   try {
     const { data } = await api.post("/courses", course);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}
+
+export async function updateUser(
+  userId: string,
+  user: UpdateUser
+): Promise<[any | null, any]> {
+  try {
+    const { data } = await api.put(`/users/${userId}`, user);
     return [data, null];
   } catch (error: any) {
     return [null, error];

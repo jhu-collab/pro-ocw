@@ -1,7 +1,7 @@
 import cn from "@/lib/cn";
 import { Book, ChevronUp, LogOut, UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useCallback } from "react";
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useSupabase } from "@/providers/supabase-provider";
 import { Course, User } from "@/types/types";
 
 function MenuItem({
@@ -42,12 +41,6 @@ export default function UserProfileButton({
   course: Course;
 }) {
   const router = useRouter();
-  const { supabase } = useSupabase();
-  // const { course } = useTeam();
-
-  const handleSignOut = useCallback(() => {
-    supabase.auth.signOut();
-  }, [supabase]);
 
   return (
     <DropdownMenu>
@@ -83,7 +76,10 @@ export default function UserProfileButton({
           <Book className="w-4" />
           Documentation
         </MenuItem>
-        <MenuItem onClick={handleSignOut} className="text-gray-500">
+        <MenuItem
+          onClick={() => router.push("/api/auth/signout")}
+          className="text-gray-500"
+        >
           <LogOut className="w-4" />
           Sign out
         </MenuItem>

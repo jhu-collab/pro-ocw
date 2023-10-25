@@ -1,13 +1,12 @@
 "use client";
 import IconCircle from "@/components/app/IconCircle";
 import { Button } from "@/components/ui/button";
-import { useSupabase } from "@/providers/supabase-provider";
-
 import { ArrowRight, Home } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const HomeCard = () => {
-  const { supabase } = useSupabase();
+  const router = useRouter();
   return (
     <div className="flex h-full w-full justify-center md:items-center">
       <div className="flex flex-col items-center space-y-8 p-8 text-center">
@@ -28,12 +27,7 @@ const HomeCard = () => {
             <ArrowRight className="mr-2 w-4" /> Go Home
           </Button>
         </Link>
-        <Button
-          variant="link"
-          onClick={async () => {
-            await supabase.auth.signOut();
-          }}
-        >
+        <Button variant="link" onClick={() => router.push("/api/auth/signout")}>
           Sign Out
         </Button>
       </div>

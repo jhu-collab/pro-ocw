@@ -29,12 +29,17 @@ export interface CreateCourse {
   courseCode: string;
 }
 
+export interface UpdateUser {
+  fullName: string;
+  metadata: any;
+}
+
 export interface Invite {
   id: string;
   createdAt: string;
   role: Role;
   joined: boolean;
-  email: string;  
+  email: string;
   send: boolean;
   userId: string;
   courseId: string;

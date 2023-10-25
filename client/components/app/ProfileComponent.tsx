@@ -1,29 +1,37 @@
 "use client";
 import SettingsCard from "@/components/app/SettingsCard";
 import { Input } from "@/components/ui/input";
-import { useSupabase } from "@/providers/supabase-provider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
+import { User } from "@/types/types";
+import { updateUser } from "@/lib/api";
 
-const ProfileComponent = ({ profile }: { profile: Profile }) => {
-  const { supabase } = useSupabase();
-  const [name, setName] = useState(profile.full_name ?? "");
+const ProfileComponent = ({ user }: { user: User }) => {
+  const [name, setName] = useState(user.fullName ?? "");
+
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
   const handleUpdateName = async () => {
     setLoading(true);
-    await supabase
-      .from("profiles")
-      .update({ full_name: name })
-      .eq("id", profile.id);
-
-    toast({
-      title: "Profile updated",
-      description: "Your profile has been updated",
+    const [data, error] = await updateUser(user.id, {
+      fullName: name,
+      metadata: JSON.stringify(user.metadata),
     });
+
+    if (error) {
+      toast({
+        title: "Failed to update profile",
+        description: error.response.data.message,
+      });
+    } else {
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been updated",
+      });
+    }
 
     setLoading(false);
     router.refresh();
