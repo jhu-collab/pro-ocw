@@ -113,3 +113,15 @@ export async function getCourseById(
     return [null, error];
   }
 }
+
+export async function getUserMemebershipByCourseId(
+  userId: string,
+  courseId: string
+): Promise<[any | null, any]> {
+  try {
+    const { data } = await api.get(`/members/users/${userId}/courses/${courseId}`);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}

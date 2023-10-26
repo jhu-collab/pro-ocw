@@ -7,17 +7,18 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
+import { Course } from "@/types/types";
 
 export default function GeneralComponent({
-  team,
+  course,
   userMembership,
 }: {
-  team: Team;
+  course: Course;
   userMembership: Member;
 }) {
   const [leaveLoading, setLeaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [name, setName] = useState(team?.name ?? "");
+  const [name, setName] = useState(course?.name ?? "");
   const [nameLoading, setNameLoading] = useState(false);
   const router = useRouter();
   const { supabase } = useSupabase();
@@ -25,7 +26,7 @@ export default function GeneralComponent({
 
   const role = userMembership.role;
 
-  const isOwner = role === "owner";
+  const isInstructor = role === "INSTRUCTOR";
 
   const handleLeaveTeam = async () => {
     setLeaveLoading(true);
@@ -44,53 +45,127 @@ export default function GeneralComponent({
   };
 
   const handleDeleteTeam = async () => {
-    setDeleteLoading(true);
+    // setDeleteLoading(true);
 
-    await supabase.from("teams").delete().eq("id", team.id);
+    // await supabase.from("teams").delete().eq("id", course.id);
 
-    toast({
-      title: "Team deleted",
-      description: "Your team has been deleted",
-    });
+    // toast({
+    //   title: "Team deleted",
+    //   description: "Your team has been deleted",
+    // });
 
-    router.refresh();
+    // router.refresh();
 
-    setDeleteLoading(false);
+    // setDeleteLoading(false);
   };
 
-  const handleUpdateName = async () => {
-    setNameLoading(true);
+  const handleUpdate = async () => {
+    // setNameLoading(true);
 
-    await supabase.from("teams").update({ name }).eq("id", team.id);
+    // await supabase.from("teams").update({ name }).eq("id", team.id);
 
-    toast({
-      title: "Team name updated",
-      description: "Your team name has been updated",
-    });
+    // toast({
+    //   title: "Team name updated",
+    //   description: "Your team name has been updated",
+    // });
 
-    setNameLoading(false);
+    // setNameLoading(false);
 
-    router.refresh();
+    // router.refresh();
   };
 
   return (
     <div className="flex flex-col space-y-4">
-      <SettingsCard
-        title="Team name"
-        description="This is your team's visible name within Demorepo. For example, the name of your company or department."
-        button={{
-          name: "Save",
-          onClick: handleUpdateName,
-          loading: nameLoading,
-        }}
-      >
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="max-w-sm"
-          placeholder="Team name"
-        />
-      </SettingsCard>
+      {isInstructor && (
+        <>
+          <SettingsCard
+            title="Course Name"
+            description="This is the display name of your course."
+            button={{
+              name: "Save",
+              onClick: handleUpdate,
+              loading: nameLoading,
+            }}
+          >
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="max-w-sm"
+              placeholder="Team name"
+            />
+          </SettingsCard>
+
+          <SettingsCard
+            title="Course Semester"
+            description="This is the semester this course is offered."
+            button={{
+              name: "Save",
+              onClick: handleUpdate,
+              loading: nameLoading,
+            }}
+          >
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="max-w-sm"
+              placeholder="Team name"
+            />
+          </SettingsCard>
+
+          <SettingsCard
+            title="Course Year"
+            description="This is the year this course is offered."
+            button={{
+              name: "Save",
+              onClick: handleUpdate,
+              loading: nameLoading,
+            }}
+          >
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="max-w-sm"
+              placeholder="Team name"
+            />
+          </SettingsCard>
+
+          <SettingsCard
+            title="Course Code"
+            description="This is the official course code for this course at your institution."
+            button={{
+              name: "Save",
+              onClick: handleUpdate,
+              loading: nameLoading,
+            }}
+          >
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="max-w-sm"
+              placeholder="Team name"
+            />
+          </SettingsCard>
+
+          <SettingsCard
+            title="Coursebook Id"
+            description="This is the course slug. It should be unique and match the name of the folder that contains the coursebook for this course."
+            button={{
+              name: "Save",
+              onClick: handleUpdate,
+              loading: nameLoading,
+            }}
+          >
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="max-w-sm"
+              placeholder="Team name"
+            />
+          </SettingsCard>
+
+          
+        </>
+      )}
       {/* <SettingsCard
           title="URL Slug"
           description={`This is your team's URL slug. It will be used to access your team's dashboard.`}
@@ -124,7 +199,7 @@ export default function GeneralComponent({
             />
           </div>
         </SettingsCard> */}
-      {!isOwner && (
+      {!isInstructor && (
         <ConfirmSettingsCard
           title="Leave team"
           description="Revoke your access to this team. Any resources you have added to this team will remain"
@@ -140,20 +215,22 @@ export default function GeneralComponent({
           }}
         />
       )}
-      <ConfirmSettingsCard
-        title="Delete team"
-        description="Permanently delete your team and all of its contents from the platform. This action is not reversible, so please continue with caution."
-        button={{
-          name: "Delete team",
-          variant: "destructive",
-          onClick: handleDeleteTeam,
-          loading: deleteLoading,
-        }}
-        alert={{
-          title: "Are you absolutely sure?",
-          description: `This action cannot be undone. This will permanently delete your team and remove your data from our servers.`,
-        }}
-      />
+      {isInstructor && (
+        <ConfirmSettingsCard
+          title="Delete team"
+          description="Permanently delete your team and all of its contents from the platform. This action is not reversible, so please continue with caution."
+          button={{
+            name: "Delete team",
+            variant: "destructive",
+            onClick: handleDeleteTeam,
+            loading: deleteLoading,
+          }}
+          alert={{
+            title: "Are you absolutely sure?",
+            description: `This action cannot be undone. This will permanently delete your team and remove your data from our servers.`,
+          }}
+        />
+      )}
     </div>
   );
 }

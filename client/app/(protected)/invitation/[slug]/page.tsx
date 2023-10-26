@@ -22,7 +22,6 @@ export default async function InvitationPage({
   if (!user) {
     redirect("/signin");
   }
-  // console.log("user: ", user);
 
   // get the invite data
   const [inviteData, _] = await getInviteById(inviteIdString);
@@ -31,7 +30,6 @@ export default async function InvitationPage({
     redirect("/signin");
   }
 
-  // console.log("inviteData: ", inviteData);
 
   // Invitation email check
   const email = inviteData.email;
@@ -39,7 +37,7 @@ export default async function InvitationPage({
   if (email !== user.email) {
     redirect("/signin");
   }
-  // console.log("email: ", email);
+
 
   return (
     <div className="h-screen">
