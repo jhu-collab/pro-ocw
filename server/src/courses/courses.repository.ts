@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Course } from './course.entity';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
@@ -21,7 +21,17 @@ export class CourseRepository extends Repository<Course> {
       subscribed: false,
       createdAt: new Date(),
     });
-    return await this.save(course);
+
+    try {
+      return await this.save(course);
+    } catch (error) {
+      if (error.code === '23505') {
+        // duplicate coursebookId
+        throw new ConflictException('Coursebook Id must be unique');
+      } else {
+        throw error;
+      }
+    }
   }
 
   async updateCourse(

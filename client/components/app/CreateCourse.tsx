@@ -35,18 +35,6 @@ export default function CreateCourse({ user }: { user: User }) {
     },
   };
 
-  const GET_COURSEBOOK_ID_STEP: StepProps = {
-    title: "What is the coursebook ID?",
-    icon: <Home className="h-6 w-6 text-gray-600" />,
-    fieldType: "text",
-    placeholder: "ex: ds226-sp-23",
-    onSubmit: async (value: string) => {
-      if (!value || !user) return;
-      setCourse({ ...course, coursebookId: value });
-      setStepIndex(stepIndex + 1);
-    },
-  };
-
   const GET_SEMESTER_STEP: StepProps = {
     title: "What semester is the course?",
     icon: <Home className="h-6 w-6 text-gray-600" />,
@@ -79,27 +67,40 @@ export default function CreateCourse({ user }: { user: User }) {
     placeholder: "ex: EN.601.226",
     onSubmit: async (value: string) => {
       if (!value || !user) return;
-      const [_, courseError] = await createCourse({
+      setCourse({ ...course, courseCode: value });
+      setStepIndex(stepIndex + 1);
+    },
+  };
+
+  const GET_COURSEBOOK_ID_STEP: StepProps = {
+    title: "What is the coursebook ID?",
+    icon: <Home className="h-6 w-6 text-gray-600" />,
+    fieldType: "text",
+    placeholder: "ex: ds226-sp-23",
+    onSubmit: async (value: string) => {
+      if (!value || !user) return;
+      const [created, courseError] = await createCourse({
         ...course,
-        courseCode: value,
+        coursebookId: value,
       });
-      if (courseError) {
+      if (!created || courseError) {
         toast({
           title: "Error creating course",
-          description: courseError.message,
+          description:
+            courseError.response.data.message || "Something went wrong",
         });
         return;
       }
-      router.push(`/${course.coursebookId}`);
+      router.push(`/${created.coursebookId}`);
     },
   };
 
   const steps = [
     GET_COURSE_NAME_STEP,
-    GET_COURSEBOOK_ID_STEP,
     GET_SEMESTER_STEP,
     GET_YEAR_STEP,
     GET_COURSE_CODE_STEP,
+    GET_COURSEBOOK_ID_STEP,
   ];
 
   if (!user) return null;
