@@ -1,6 +1,6 @@
 import { Check, ChevronDown, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import CreateTeamModal from "./CreateTeamModal";
 import { Course } from "@/types/types";
 
 export default function TeamSelector({
@@ -27,14 +26,8 @@ export default function TeamSelector({
     [router]
   );
 
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-
   return (
     <>
-      <CreateTeamModal
-        open={createModalOpen}
-        onOpenChange={setCreateModalOpen}
-      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex select-none items-center justify-between rounded-lg bg-white p-2 shadow-outline transition hover:shadow-md-outline">
@@ -77,7 +70,7 @@ export default function TeamSelector({
           <DropdownMenuItem
             className="flex gap-x-2 rounded-b px-3 text-gray-600"
             onClick={() => {
-              setCreateModalOpen(true);
+              router.push("/create");
             }}
           >
             <Plus className="mx-3 w-4" />

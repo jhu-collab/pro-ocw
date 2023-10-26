@@ -43,4 +43,13 @@ export interface Invite {
   send: boolean;
   userId: string;
   courseId: string;
+  course?: Course;
+}
+
+export interface Member {
+  id: string;
+  createdAt: string;
+  role: Role;
+  userId: string;
+  courseId: string;
 }

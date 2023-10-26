@@ -47,6 +47,17 @@ export async function getInvites(userId: string): Promise<[Invite[], any]> {
   }
 }
 
+export async function getInviteById(
+  inviteId: string
+): Promise<[Invite | null, any]> {
+  try {
+    const { data } = await api.get(`/invites/${inviteId}`);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}
+
 export async function getInvitedCourses(
   userId: string
 ): Promise<[Course[], any]> {
@@ -86,6 +97,17 @@ export async function getCourseByCoursebookId(
 ): Promise<[Course | null, any]> {
   try {
     const { data } = await api.get(`/courses?coursebookId=${coursebookId}`);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}
+
+export async function getCourseById(
+  couseId: string
+): Promise<[Course | null, any]> {
+  try {
+    const { data } = await api.get(`/courses/${couseId}`);
     return [data, null];
   } catch (error: any) {
     return [null, error];

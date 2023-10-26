@@ -44,3 +44,14 @@ export async function updateUser(
     return [null, error];
   }
 }
+
+export async function acceptInvite(
+  inviteId: string
+): Promise<[Member | null, any]> {
+  try {
+    const { data } = await api.get(`/invites/${inviteId}/accept`);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}

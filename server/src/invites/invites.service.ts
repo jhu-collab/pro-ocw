@@ -17,7 +17,10 @@ export class InvitesService {
   ) {}
 
   async getInviteById(id: string, userId: string): Promise<Invite> {
-    const invite = await this.inviteRepository.findOneBy({ id, userId });
+    const invite = await this.inviteRepository.findOne({
+      where: { id, userId },
+      relations: { course: true },
+    });
     if (!invite) {
       throw new NotFoundException('Invite not found');
     }

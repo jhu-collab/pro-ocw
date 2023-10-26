@@ -7,39 +7,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useSupabase } from "@/providers/supabase-provider";
 import { DoorOpenIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { Course, User, Invite } from "@/types/types";
+import { acceptInvite } from "@/lib/api";
 
 export default function InviteComponent({
-  team,
+  course,
   user,
   invite,
 }: {
-  team: Team;
-  user: Profile;
+  course: Course;
+  user: User;
   invite: Invite;
 }) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
 
-  const { supabase } = useSupabase();
-
   if (!user) return null;
 
   const handleJoin = async () => {
     setLoading(true);
-    const { error } = await supabase
-      .from("members")
-      .insert([{ team_id: team.id, user_id: user.id, role: invite.role }]);
-    if (error) {
-      console.error(error);
+    const [_, memberDataError] = await acceptInvite(invite.id);
+    if (memberDataError) {
+      console.log("memberDataError: ", memberDataError);
       setLoading(false);
     } else {
-      router.push(`/${team.id}`);
+      router.push(`/${course.id}`);
     }
   };
 
@@ -48,9 +45,9 @@ export default function InviteComponent({
       <div className="flex flex-col items-center space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-center">Suparepo Invitation</CardTitle>
+            <CardTitle className="text-center">Course Invitation</CardTitle>
             <CardDescription className="text-center">
-              Join {team.name} on Suparepo
+              Join {course.name} 
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -67,8 +64,7 @@ export default function InviteComponent({
             </div>
           </CardContent>
           <CardFooter className="text-center max-w-md">
-            By joining, you will be able to access the team&apos;s projects and
-            collaborate with other members.
+            By joining, you will be able to access the course&apos;s material.
           </CardFooter>
         </Card>
       </div>
