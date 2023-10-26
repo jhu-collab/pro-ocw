@@ -21,6 +21,16 @@ export interface Course {
   courseCode: string;
 }
 
+export interface UpdateCourse {
+  name: string;
+  coursebookId: string;
+  semester: Semester;
+  year: number;
+  courseCode: string;
+  stripeCustomeId: string;
+  subscribed: boolean;
+}
+
 export interface CreateCourse {
   name: string;
   coursebookId: string;

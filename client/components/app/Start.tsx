@@ -25,7 +25,7 @@ export default function Start({
   coursesFromInvites: Course[];
 }) {
   const router = useRouter();
-
+  console.log("rerendered!");
   return (
     <div className="flex h-full flex-col">
       <div className="flex flex-auto overflow-y-auto">

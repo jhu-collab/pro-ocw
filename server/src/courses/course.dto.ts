@@ -5,10 +5,12 @@ import {
   IsPositive,
   Min,
   IsBoolean,
+  IsNotEmpty,
 } from 'class-validator';
 import { Semester } from './course.enum';
 
 export class CreateCourseDto {
+  @IsNotEmpty()
   @IsString()
   name: string;
 
@@ -20,9 +22,11 @@ export class CreateCourseDto {
   @Min(1)
   year: number;
 
+  @IsNotEmpty()
   @IsString()
   courseCode: string;
 
+  @IsNotEmpty()
   @IsString()
   coursebookId: string;
 }
@@ -34,6 +38,7 @@ export class UpdateCourseDto {
   @IsBoolean()
   subscribed: boolean;
 
+  @IsNotEmpty()
   @IsString()
   name: string;
 
@@ -45,9 +50,11 @@ export class UpdateCourseDto {
   @Min(1)
   year: number;
 
+  @IsNotEmpty()
   @IsString()
   courseCode: string;
 
+  @IsNotEmpty()
   @IsString()
   coursebookId: string;
 }

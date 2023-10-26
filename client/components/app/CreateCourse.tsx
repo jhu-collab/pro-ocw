@@ -9,6 +9,7 @@ import Testimonial from "./Testimonial";
 import { CreateCourse, Semester, User } from "@/types/types";
 import { createCourse } from "@/lib/api";
 import { toast, useToast } from "../ui/use-toast";
+import { SEMESTERS } from "@/constants";
 
 export default function CreateCourse({ user }: { user: User }) {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function CreateCourse({ user }: { user: User }) {
     icon: <Home className="h-6 w-6 text-gray-600" />,
     fieldType: "dropdown",
     placeholder: "ex: FALL",
-    dropdownItems: ["FALL", "SPRING", "SUMMER", "INTERSESSION"],
+    dropdownItems: SEMESTERS,
     onSubmit: async (value: Semester) => {
       if (!value || !user) return;
       setCourse({ ...course, semester: value });
@@ -89,7 +90,7 @@ export default function CreateCourse({ user }: { user: User }) {
         });
         return;
       }
-      router.push("/start");
+      router.push(`/${course.coursebookId}`);
     },
   };
 

@@ -1,3 +1,5 @@
+import { Semester } from "./types/types";
+
 export const ROLE_OWNER = "OWNER";
 export const ROLE_MEMBER = "MEMBER";
 export const ROLE_ADMIN = "ADMIN";
@@ -17,3 +19,14 @@ export const MEMBERS = [
     image: "",
   },
 ];
+
+export const SEMESTERS: Semester[] = [
+  "SPRING",
+  "SUMMER",
+  "FALL",
+  "INTERSESSION",
+];
+
+export const ROLE_INSTRUCTOR = "INSTRUCTOR";
+export const ROLE_STUDENT = "STUDENT";
+export const ROLE_TA = "TA";

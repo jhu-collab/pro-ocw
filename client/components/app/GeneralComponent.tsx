@@ -3,11 +3,19 @@
 import ConfirmSettingsCard from "@/components/app/ConfirmSettingsCard";
 import SettingsCard from "@/components/app/SettingsCard";
 import { Input } from "@/components/ui/input";
-import { useSupabase } from "@/providers/supabase-provider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
-import { Course } from "@/types/types";
+import { Course, Semester, UpdateCourse, Member } from "@/types/types";
+import { deleteCourse, leaveCourse, updateCourse } from "@/lib/api";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { ROLE_INSTRUCTOR, SEMESTERS } from "@/constants";
 
 export default function GeneralComponent({
   course,
@@ -18,60 +26,70 @@ export default function GeneralComponent({
 }) {
   const [leaveLoading, setLeaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [name, setName] = useState(course?.name ?? "");
-  const [nameLoading, setNameLoading] = useState(false);
+  const [courseInfo, setCourseInfo] = useState<UpdateCourse>({
+    name: course.name,
+    semester: course.semester,
+    year: course.year,
+    courseCode: course.courseCode,
+    coursebookId: course.coursebookId,
+    stripeCustomeId: course.stripeCustomerId,
+    subscribed: course.subscribed,
+  });
+
   const router = useRouter();
-  const { supabase } = useSupabase();
   const { toast } = useToast();
 
   const role = userMembership.role;
 
-  const isInstructor = role === "INSTRUCTOR";
+  const isInstructor = role === ROLE_INSTRUCTOR;
 
   const handleLeaveTeam = async () => {
     setLeaveLoading(true);
-
-    await supabase
-      .from("members")
-      .delete()
-      .eq("user_id", userMembership.user_id)
-      .eq("team_id", userMembership.team_id);
-
-    toast({
-      title: "Left team",
-      description: "You have left the team",
-    });
+    const [_, error] = await leaveCourse(userMembership.userId, course.id);
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.response.data.message || "Something went wrong",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "You have left the course",
+      });
+      router.push("/start");
+    }
     setLeaveLoading(false);
   };
 
-  const handleDeleteTeam = async () => {
-    // setDeleteLoading(true);
-
-    // await supabase.from("teams").delete().eq("id", course.id);
-
-    // toast({
-    //   title: "Team deleted",
-    //   description: "Your team has been deleted",
-    // });
-
-    // router.refresh();
-
-    // setDeleteLoading(false);
+  const handleDeleteCourse = async () => {
+    setDeleteLoading(true);
+    const [_, error] = await deleteCourse(course.id);
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.response.data.message || "Something went wrong",
+      });
+    }
+    router.push("/start");
+    setDeleteLoading(false);
   };
 
   const handleUpdate = async () => {
-    // setNameLoading(true);
-
-    // await supabase.from("teams").update({ name }).eq("id", team.id);
-
-    // toast({
-    //   title: "Team name updated",
-    //   description: "Your team name has been updated",
-    // });
-
-    // setNameLoading(false);
-
-    // router.refresh();
+    const [_, error] = await updateCourse(course.id, courseInfo);
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.response.data.message || "Something went wrong",
+      });
+      return Promise.reject();
+    } else {
+      toast({
+        title: "Success",
+        description: "Course updated",
+      });
+      router.refresh();
+      return Promise.resolve();
+    }
   };
 
   return (
@@ -84,14 +102,15 @@ export default function GeneralComponent({
             button={{
               name: "Save",
               onClick: handleUpdate,
-              loading: nameLoading,
+              loading: false,
             }}
           >
             <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={courseInfo.name}
+              onChange={(e) =>
+                setCourseInfo({ ...courseInfo, name: e.target.value })
+              }
               className="max-w-sm"
-              placeholder="Team name"
             />
           </SettingsCard>
 
@@ -101,15 +120,28 @@ export default function GeneralComponent({
             button={{
               name: "Save",
               onClick: handleUpdate,
-              loading: nameLoading,
+              loading: false,
             }}
           >
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="max-w-sm"
-              placeholder="Team name"
-            />
+            <Select
+              onValueChange={(value: Semester) =>
+                setCourseInfo({ ...courseInfo, semester: value })
+              }
+              value={courseInfo.semester}
+            >
+              <SelectTrigger className="bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {SEMESTERS.map((r) => {
+                  return (
+                    <SelectItem value={r} key={r}>
+                      {r}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
           </SettingsCard>
 
           <SettingsCard
@@ -118,14 +150,16 @@ export default function GeneralComponent({
             button={{
               name: "Save",
               onClick: handleUpdate,
-              loading: nameLoading,
+              loading: false,
             }}
           >
             <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={courseInfo.year}
+              type="number"
+              onChange={(e) =>
+                setCourseInfo({ ...courseInfo, year: parseInt(e.target.value) })
+              }
               className="max-w-sm"
-              placeholder="Team name"
             />
           </SettingsCard>
 
@@ -135,14 +169,15 @@ export default function GeneralComponent({
             button={{
               name: "Save",
               onClick: handleUpdate,
-              loading: nameLoading,
+              loading: false,
             }}
           >
             <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={courseInfo.courseCode}
+              onChange={(e) =>
+                setCourseInfo({ ...courseInfo, courseCode: e.target.value })
+              }
               className="max-w-sm"
-              placeholder="Team name"
             />
           </SettingsCard>
 
@@ -151,83 +186,54 @@ export default function GeneralComponent({
             description="This is the course slug. It should be unique and match the name of the folder that contains the coursebook for this course."
             button={{
               name: "Save",
-              onClick: handleUpdate,
-              loading: nameLoading,
+              onClick: () => {
+                handleUpdate().then(() => {
+                  router.push(`/${courseInfo.coursebookId}/settings/general`);
+                });
+              },
+              loading: false,
             }}
           >
             <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={courseInfo.coursebookId}
+              onChange={(e) =>
+                setCourseInfo({ ...courseInfo, coursebookId: e.target.value })
+              }
               className="max-w-sm"
-              placeholder="Team name"
             />
           </SettingsCard>
-
-          
         </>
       )}
-      {/* <SettingsCard
-          title="URL Slug"
-          description={`This is your team's URL slug. It will be used to access your team's dashboard.`}
-          button={{
-            name: "Save",
-            onClick: async () => {
-              try {
-                await updateSlugMutation.mutateAsync({
-                  teamId: team.id,
-                  slug,
-                });
 
-                await router.push(`/${slug}/settings/general`);
-              } catch (e) {
-                if (e instanceof TRPCClientError) {
-                  toast.error(e.message);
-                }
-              }
-            },
-            loading: updateSlugMutation.isLoading,
-          }}
-        >
-          <div className="flex items-center">
-            <p className="flex h-10 items-center rounded-l-md border-y border-l border-gray-300 bg-gray-50 px-3 text-gray-500">
-              https://demorepo.com/
-            </p>
-            <Input
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              className="max-w-sm rounded-l-none"
-            />
-          </div>
-        </SettingsCard> */}
       {!isInstructor && (
         <ConfirmSettingsCard
-          title="Leave team"
-          description="Revoke your access to this team. Any resources you have added to this team will remain"
+          title="Leave course"
+          description="Revoke your access to this course. Any resources you have added to this course will remain"
           button={{
-            name: "Leave team",
+            name: "Leave course",
             onClick: handleLeaveTeam,
             loading: leaveLoading,
           }}
           alert={{
             title: "Are you sure?",
             description:
-              "If you leave your team, you will have to be invited back in.",
+              "If you leave your course, you will have to be invited back in.",
           }}
         />
       )}
       {isInstructor && (
         <ConfirmSettingsCard
-          title="Delete team"
-          description="Permanently delete your team and all of its contents from the platform. This action is not reversible, so please continue with caution."
+          title="Delete course"
+          description="Permanently delete your course and all of its contents from the platform. This action is not reversible, so please continue with caution."
           button={{
-            name: "Delete team",
+            name: "Delete course",
             variant: "destructive",
-            onClick: handleDeleteTeam,
+            onClick: handleDeleteCourse,
             loading: deleteLoading,
           }}
           alert={{
             title: "Are you absolutely sure?",
-            description: `This action cannot be undone. This will permanently delete your team and remove your data from our servers.`,
+            description: `This action cannot be undone. This will permanently delete your course and remove your data from our servers.`,
           }}
         />
       )}
