@@ -38,11 +38,20 @@ export class CourseRepository extends Repository<Course> {
     id: string,
     updateCourseDto: UpdateCourseDto,
   ): Promise<Course> {
-    const course = await this.save({
-      id,
-      ...updateCourseDto,
-    });
-    return course;
+    try {
+      const course = await this.save({
+        id,
+        ...updateCourseDto,
+      });
+      return course;
+    } catch (error) {
+      if (error.code === '23505') {
+        // duplicate coursebookId
+        throw new ConflictException('Coursebook Id must be unique');
+      } else {
+        throw error;
+      }
+    }
   }
 
   async getCoursesByUserId(userId: string): Promise<Course[]> {
