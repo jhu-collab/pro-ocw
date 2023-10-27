@@ -32,7 +32,7 @@ export default async function MembersPage({
 
   if (!courseData) {
     console.error("Error fetching course data:", courseDataError);
-    return;
+    return redirect("/start");
   }
 
   const [member, memberError] = await getUserMemebershipByCourseId(
@@ -41,7 +41,7 @@ export default async function MembersPage({
   );
   if (!member) {
     console.error("Error fetching user membership:", memberError);
-    return;
+    return redirect("/start");
   }
 
   // get all the members of the course
@@ -50,13 +50,13 @@ export default async function MembersPage({
   );
   if (!membersData) {
     console.error("Error fetching members data:", membersDataError);
-    return;
+    return redirect("/start");
   }
 
   const userMember = membersData.find((member) => member.userId === user.id);
   if (!userMember) {
     console.error("Error fetching user membership:", memberError);
-    return;
+    return redirect("/start");
   }
 
   // get all the invites of the team
@@ -65,13 +65,13 @@ export default async function MembersPage({
   );
   if (!invitesData) {
     console.error("Error fetching invites data:", invitesDataError);
-    return;
+    return redirect("/start");
   }
 
   const [userCourses, userCoursesError] = await getUserCourses(user.id);
   if (!userCourses) {
     console.error("Error fetching user courses:", userCoursesError);
-    return;
+    return redirect("/start");
   }
 
   return (

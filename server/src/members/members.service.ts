@@ -4,7 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { MemberRepository } from './members.repository';
-import { CreateMemberDto, MemberByCourseAndUserDto } from './member.dto';
+import {
+  CreateMemberDto,
+  MemberByCourseAndUserDto,
+  UpdateMemberDto,
+} from './member.dto';
 import { Member } from './member.entity';
 import { Role } from './role.enum';
 
@@ -52,6 +56,21 @@ export class MembersService {
     memberByCourseAndUserDto: MemberByCourseAndUserDto,
     userId: string,
   ): Promise<void> {
+    const isMemberToRemoveInstructor = await this.isInstructor({
+      courseId: memberByCourseAndUserDto.courseId,
+      userId: memberByCourseAndUserDto.userId,
+    });
+
+    if (isMemberToRemoveInstructor) {
+      const isCurrentUserInstructor = await this.isInstructor({
+        courseId: memberByCourseAndUserDto.courseId,
+        userId,
+      });
+      if (!isCurrentUserInstructor) {
+        throw new ForbiddenException('Only instructors can remove instructors');
+      }
+    }
+
     const authorized = await this.isInstructorOrTA({
       courseId: memberByCourseAndUserDto.courseId,
       userId,
@@ -61,6 +80,27 @@ export class MembersService {
     }
     const res = await this.memberRepository.delete(memberByCourseAndUserDto);
     if (res.affected === 0) {
+      throw new NotFoundException('Member not found');
+    }
+  }
+
+  async updateUserMembership(
+    id: string,
+    userId: string,
+    updateMemberDto: UpdateMemberDto,
+  ): Promise<void> {
+    const authorized = await this.isInstructorOrTA({
+      courseId: updateMemberDto.courseId,
+      userId,
+    });
+    if (!authorized) {
+      throw new ForbiddenException('Only instructors can update membership');
+    }
+    const res = await this.memberRepository.save({
+      id,
+      ...updateMemberDto,
+    });
+    if (!res) {
       throw new NotFoundException('Member not found');
     }
   }

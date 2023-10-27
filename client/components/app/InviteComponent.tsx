@@ -29,7 +29,9 @@ export default function InviteComponent({
 
   const [loading, setLoading] = useState(false);
 
-  if (!user) return null;
+  if (!user) {
+    router.push("/signin");
+  }
 
   const handleJoin = async () => {
     setLoading(true);

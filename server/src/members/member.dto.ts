@@ -18,3 +18,17 @@ export class MemberByCourseAndUserDto {
   @IsUUID()
   courseId: string;
 }
+
+export class UpdateMemberDto {
+  @IsUUID()
+  id: string;
+
+  @IsUUID()
+  userId: string;
+
+  @IsUUID()
+  courseId: string;
+
+  @IsEnum(Role)
+  role: string;
+}

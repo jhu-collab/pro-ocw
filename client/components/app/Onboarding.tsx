@@ -38,7 +38,9 @@ export default function Onboarding({ user }: { user: Profile }) {
     },
   };
 
-  if (!user) return null;
+  if (!user) {
+    router.push("/signin");
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -49,7 +51,7 @@ export default function Onboarding({ user }: { user: Profile }) {
           </div>
           <div className="my-auto">
             <div className="mb-32">
-              <Step {...NAME_STEP} loading={loading} />
+              <Step {...NAME_STEP} />
             </div>
           </div>
         </div>

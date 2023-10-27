@@ -18,10 +18,15 @@ import { Loader2, MoreHorizontal, Plus } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { Course, User, Invite, Member, Role } from "@/types/types";
-import { batchCreateInvite, deleteInviteById } from "@/lib/api";
+import {
+  batchCreateInvite,
+  deleteInviteById,
+  deleteMember,
+  updateMember,
+} from "@/lib/api";
 import { ROLES, ROLE_INSTRUCTOR, ROLE_STUDENT, ROLE_TA } from "@/constants";
 
 const InviteSection = ({ course, user }: { course: Course; user: User }) => {
@@ -201,7 +206,9 @@ const InvitedSection = ({
     [router, toast]
   );
 
-  if (!course || !courseInvites) return null;
+  if (!course || !courseInvites) {
+    router.push("/start");
+  }
 
   return (
     <div className="flex w-full flex-col">
@@ -278,8 +285,8 @@ const MembersSection = ({
   userMember: Member;
   courseMembers: Member[];
 }) => {
-  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleUpdateRole = useCallback(
     async (member: Member, role: Role) => {
@@ -294,14 +301,24 @@ const MembersSection = ({
         return;
       }
 
-      setLoading(true);
+      const [_, error] = await updateMember(member.userId, {
+        ...member,
+        role,
+      });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.response.data.message || error.message,
+        });
+        return;
+      }
 
       toast({
         title: "Role updated",
         description: `Role has been updated to ${role}`,
       });
-
-      setLoading(false);
     },
     [course, user, toast]
   );
@@ -321,19 +338,50 @@ const MembersSection = ({
 
       if (!confirm("Are you sure you want to remove this member?")) return;
 
+      const [_, error] = await deleteMember(member.userId, member.courseId);
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.response.data.message || error.message,
+        });
+        return;
+      }
+
       toast({
         title: "Member removed",
         description: `Removed from the team`,
       });
+      router.refresh();
     },
-    [course, user, toast]
+    [course, user, toast, router]
   );
 
-  if (!user || !course || !courseMembers) return null;
+  if (!user || !course || !courseMembers) {
+    router.push("/start");
+  }
 
-  const isAdmin =
-    userMember.role === ROLE_INSTRUCTOR || userMember.role === ROLE_TA;
+  const isInstructor = userMember.role === ROLE_INSTRUCTOR;
+  const isTA = userMember.role === ROLE_TA;
 
+  const canDeleteMember = (member: Member) => {
+    if (member.userId === user.id) return false;
+    if (isInstructor) return true;
+    if (isTA) {
+      return member.role !== ROLE_INSTRUCTOR;
+    }
+    return false;
+  };
+
+  const canUpdateMember = (member: Member) => {
+    if (member.userId === user.id) return false;
+    if (isInstructor) return true;
+    if (isTA) {
+      return member.role === ROLE_STUDENT;
+    }
+    return false;
+  };
   return (
     <>
       {courseMembers.map((m) => {
@@ -360,7 +408,7 @@ const MembersSection = ({
             </div>
             <div className="flex items-center gap-x-6">
               <div className="">
-                {user.id === m.userId || !isAdmin ? (
+                {!canUpdateMember(m) ? (
                   <span className="text-gray-500">
                     {role[0].toUpperCase() + role.slice(1).toLowerCase()}
                   </span>
@@ -384,7 +432,7 @@ const MembersSection = ({
                   </Select>
                 )}
               </div>
-              {user.id !== m.userId && isAdmin && (
+              {canDeleteMember(m) && (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <MoreHorizontal className="w-4 text-gray-500" />

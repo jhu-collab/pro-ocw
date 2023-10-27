@@ -104,8 +104,9 @@ export default function CreateCourse({ user }: { user: User }) {
     GET_COURSEBOOK_ID_STEP,
   ];
 
-  if (!user) return null;
-
+  if (!user) {
+    router.push("/signin");
+  }
   return (
     <div className="flex h-full flex-col">
       <div className="flex flex-auto overflow-y-auto">

@@ -65,6 +65,13 @@ export interface Member {
   user?: User;
 }
 
+export interface UpdateMember {
+  id: string;
+  role: Role;
+  userId: string;
+  courseId: string;
+}
+
 export interface CreateInvite {
   courseId: string;
   userId: string;
