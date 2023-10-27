@@ -129,3 +129,12 @@ export async function updateMember(id: string, member: UpdateMember) {
     return [null, error];
   }
 }
+
+export async function signup(email: string, password: string, fullName: string) {
+  try {
+    const { data } = await api.post("/auth/signup", { email, password, fullName });
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}

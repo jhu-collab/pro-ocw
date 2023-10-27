@@ -145,7 +145,7 @@ export default function Sidebar({
                   `/${course.coursebookId}/settings/`,
                   ""
                 )}
-                steps={["General", "Members", "Billing"].map((pageName) => {
+                steps={["General", "Members"].map((pageName) => {
                   return {
                     id: pageName.toLowerCase(),
                     name: pageName,
