@@ -1,4 +1,4 @@
-import { Course, User, Invite } from "@/types/types";
+import { Course, User, Invite, Member } from "@/types/types";
 import { cookies } from "next/headers";
 import axios from "axios";
 
@@ -117,11 +117,44 @@ export async function getCourseById(
 export async function getUserMemebershipByCourseId(
   userId: string,
   courseId: string
-): Promise<[any | null, any]> {
+): Promise<[Member | null, any]> {
   try {
     const { data } = await api.get(`/members/users/${userId}/courses/${courseId}`);
     return [data, null];
   } catch (error: any) {
     return [null, error];
+  }
+}
+
+export async function getMembersByCourseId(
+  courseId: string
+): Promise<[Member[], any]> {
+  try {
+    const { data } = await api.get(`/courses/${courseId}/members`);
+    return [data, null];
+  } catch (error: any) {
+    return [[], error];
+  }
+}
+
+export async function getUsersByCourseId(
+  courseId: string
+): Promise<[User[], any]> {
+  try {
+    const { data } = await api.get(`/courses/${courseId}/users`);
+    return [data, null];
+  } catch (error: any) {
+    return [[], error];
+  }
+}
+
+export async function getInvitesByCourseId(
+  courseId: string
+): Promise<[Invite[], any]> {
+  try {
+    const { data } = await api.get(`/courses/${courseId}/invites`);
+    return [data, null];
+  } catch (error: any) {
+    return [[], error];
   }
 }

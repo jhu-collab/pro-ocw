@@ -14,19 +14,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ROLES, ROLE_ADMIN, Role } from "@/constants";
 import { Loader2, MoreHorizontal, Plus } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useSupabase } from "@/providers/supabase-provider";
 import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
+import { Course, User, Invite, Member, Role } from "@/types/types";
+import { batchCreateInvite, deleteInviteById } from "@/lib/api";
+import { ROLE_STUDENT } from "@/constants";
 
-const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
+const InviteSection = ({ course, user }: { course: Course; user: User }) => {
   const [loading, setLoading] = useState(false);
-  const [invites, setInvites] = useState([{ email: "", role: "MEMBER" }]);
-  const { supabase } = useSupabase();
+  const [invites, setInvites] = useState<{email: string, role: Role}[]>([{ email: "", role: ROLE_STUDENT }]);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -57,7 +57,7 @@ const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
   }, []);
 
   const handleSendInvites = useCallback(async () => {
-    if (!team) return;
+    if (!course) return;
 
     const invitesToCreate = invites.filter((invite) => invite.email);
 
@@ -72,19 +72,14 @@ const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
 
     setLoading(true);
 
-    for (const invite of invitesToCreate) {
-      const { error } = await supabase.from("invites").insert({
-        team_id: team.id,
+    const [createInviteResult, createInviteResultError] = await batchCreateInvite({
+      data: invitesToCreate.map((invite) => ({
         email: invite.email,
         role: invite.role,
-        user_id: user.id,
-      });
-
-      if (error) {
-        console.error("Error adding invite:", error);
-        return;
-      }
-    }
+        courseId: course.id,
+        userId: user.id,
+      })),
+    });
 
     toast({
       title: "Invites sent!",
@@ -96,7 +91,7 @@ const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
     router.refresh();
 
     setLoading(false);
-  }, [team, supabase, invites, router, toast, user]);
+  }, [course, invites, router, toast, user]);
 
   return (
     <div className="rounded-lg border bg-white">
@@ -165,13 +160,12 @@ const InviteSection = ({ team, user }: { team: Team; user: Profile }) => {
 };
 
 const InvitedSection = ({
-  team,
-  teamInvites,
+  course,
+  courseInvites,
 }: {
-  team: Team;
-  teamInvites: Invite[];
+  course: Course;
+  courseInvites: Invite[];
 }) => {
-  const { supabase } = useSupabase();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -179,13 +173,9 @@ const InvitedSection = ({
     async (invite: Invite) => {
       if (!confirm("Are you sure you want to delete this invite?")) return;
 
-      const { error } = await supabase
-        .from("invites")
-        .delete()
-        .eq("id", invite.id);
-
-      if (error) {
-        console.error("Error deleting invite:", error);
+      const [deleteResult, deleteResultError] = await deleteInviteById(invite.id)
+      if (deleteResultError) {
+        console.error("Error deleting invite:", deleteResultError);
         return;
       }
 
@@ -195,17 +185,17 @@ const InvitedSection = ({
 
       router.refresh();
     },
-    [supabase, router, toast]
+    [router, toast]
   );
 
-  if (!team || !teamInvites) return null;
+  if (!course || !courseInvites) return null;
 
   return (
     <div className="flex w-full flex-col">
-      {teamInvites?.length === 0 && (
+      {courseInvites?.length === 0 && (
         <p className="py-4 text-center text-gray-500">No pending invites</p>
       )}
-      {teamInvites?.map((i) => {
+      {courseInvites?.map((i) => {
         const role = i.role;
 
         const formattedRole =
@@ -265,17 +255,17 @@ const InvitedSection = ({
 };
 
 const MembersSection = ({
-  team,
+  course,
   user,
   userMember,
-  teamMembers,
-  teamMembersProfiles,
+  courseMembers,
+  courseUsers,
 }: {
-  team: Team;
-  user: Profile;
+  course: Course;
+  user: User;
   userMember: Member;
-  teamMembers: Member[];
-  teamMembersProfiles: Profile[];
+  courseMembers: Member[];
+  courseUsers: User[];
 }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -411,23 +401,23 @@ const MembersSection = ({
 };
 
 export default function MembersComponent({
-  team,
+  course,
   user,
+  courseMembers,
+  courseInvites,
   userMember,
-  teamMembers,
-  teamInvites,
-  teamMembersProfiles,
+  courseUsers,
 }: {
-  team: Team;
-  user: Profile;
+  course: Course;
+  user: User;
   userMember: Member;
-  teamMembers: Member[];
-  teamInvites: Invite[];
-  teamMembersProfiles: Profile[];
+  courseMembers: Member[];
+  courseInvites: Invite[];
+  courseUsers: User[];
 }) {
   return (
     <div className="flex flex-col gap-y-8">
-      <InviteSection team={team} user={user} />
+      <InviteSection course={course} user={user} />
       <div className="flex flex-col rounded-lg border bg-white">
         <h3 className="ml-6 mt-4 text-lg font-medium">Members</h3>
         <Tabs defaultValue="members" className="pb-2">
@@ -437,15 +427,15 @@ export default function MembersComponent({
           </TabsList>
           <TabsContent value="members">
             <MembersSection
-              team={team}
+              course={course}
               user={user}
               userMember={userMember}
-              teamMembers={teamMembers}
-              teamMembersProfiles={teamMembersProfiles}
+              courseMembers={courseMembers}
+              courseUsers={courseUsers}
             />
           </TabsContent>
           <TabsContent value="invited">
-            <InvitedSection team={team} teamInvites={teamInvites} />
+            <InvitedSection course={course} courseInvites={courseInvites} />
           </TabsContent>
         </Tabs>
       </div>

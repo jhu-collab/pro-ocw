@@ -1,6 +1,6 @@
 // API used by client components
 
-import { Course, CreateCourse, UpdateCourse, UpdateUser } from "@/types/types";
+import { BatchCreateInvite, Course, CreateCourse, UpdateCourse, UpdateUser } from "@/types/types";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -79,6 +79,26 @@ export async function leaveCourse(userId: string, courseId: string) {
     const { data } = await api.delete(
       `/members/users/${userId}/courses/${courseId}`
     );
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}
+
+export async function deleteInviteById(id: string) {
+  try {
+    const { data } = await api.delete(`/invites/${id}`);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}
+
+export async function batchCreateInvite(
+  batchCreateInvite: BatchCreateInvite
+) {
+  try {
+    const { data } = await api.post("/invites", batchCreateInvite);
     return [data, null];
   } catch (error: any) {
     return [null, error];

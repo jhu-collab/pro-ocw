@@ -1,8 +1,15 @@
 import MembersComponent from "@/components/app/MembersComponent";
 import SettingsShell from "@/components/app/SettingsShell";
-import { Database } from "@/types/supabase";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import {
+  getCourseByCoursebookId,
+  getInvitesByCourseId,
+  getMembersByCourseId,
+  getUser,
+  getUserCourses,
+  getUserMemebershipByCourseId,
+  getUsersByCourseId,
+} from "@/lib/server";
+
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -12,145 +19,84 @@ export default async function MembersPage({
 }: {
   params: { slug: string };
 }) {
-  const { slug: teamIdString } = params;
-
-  // convert teamId to number
-  const teamId = parseInt(teamIdString, 10);
-
-  // setup supabase
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const { slug: coursebookIdString } = params;
 
   // get user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser();
 
   if (!user) {
     redirect("/signin");
   }
+  const [courseData, courseDataError] = await getCourseByCoursebookId(
+    coursebookIdString
+  );
 
-  // get user profile
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile) {
-    redirect("/signin");
-  }
-
-  // get the team with the given ID
-  const { data: team, error: teamError } = await supabase
-    .from("teams")
-    .select("*")
-    .eq("id", teamId)
-    .single();
-
-  if (teamError) {
-    console.error("Error fetching team:", teamError);
+  if (!courseData) {
+    console.error("Error fetching course data:", courseDataError);
     return;
   }
 
-  // get the user's membership for the team
-
-  const { data: userMember, error: userMembershipError } = await supabase
-    .from("members")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("team_id", teamId)
-    .single();
-
-  if (userMembershipError) {
-    console.error("Error fetching user membership:", userMembershipError);
+  const [member, memberError] = await getUserMemebershipByCourseId(
+    user.id,
+    courseData.id
+  );
+  if (!member) {
+    console.error("Error fetching user membership:", memberError);
     return;
   }
 
-  // get all the members of the team
-
-  const { data: membersData, error: membersError } = await supabase
-    .from("members")
-    .select("*")
-    .eq("team_id", teamId);
-
-  if (membersError) {
-    console.error("Error fetching members:", membersError);
+  // get all the members of the course
+  const [membersData, membersDataError] = await getMembersByCourseId(
+    courseData.id
+  );
+  if (!membersData) {
+    console.error("Error fetching members data:", membersDataError);
     return;
   }
 
-  // Then, get the profile information for each user ID
-  const memberIds = membersData.map((member) => member.user_id);
+  const userMember = membersData.find((member) => member.userId === user.id);
+  if (!userMember) {
+    console.error("Error fetching user membership:", memberError);
+    return;
+  }
 
-  const { data: profilesData, error: profilesError } = await supabase
-    .from("profiles")
-    .select("*")
-    .in("id", memberIds);
-
-  if (profilesError) {
-    console.error("Error fetching profiles:", profilesError);
+  // Then, get the user information for each user ID
+  const [usersData, usersDataError] = await getUsersByCourseId(courseData.id);
+  if (!usersData) {
+    console.error("Error fetching users data:", usersDataError);
     return;
   }
 
   // get all the invites of the team
-
-  const { data: invitesData, error: invitesError } = await supabase
-    .from("invites")
-    .select("*")
-    .eq("team_id", teamId);
-
-  if (invitesError) {
-    console.error("Error fetching invites:", invitesError);
-    return;
-  }
-
-  const filteredInvites = invitesData.filter(
-    (invite) => !profilesData.find((profile) => profile.email === invite.email)
+  const [invitesData, invitesDataError] = await getInvitesByCourseId(
+    courseData.id
   );
-
-  // get the team IDs the user is a member of
-  const { data: membershipsData, error: membershipsError } = await supabase
-    .from("members")
-    .select("team_id")
-    .eq("user_id", user.id);
-
-  if (membershipsError) {
-    console.error("Error fetching user team memberships:", membershipsError);
+  if (!invitesData) {
+    console.error("Error fetching invites data:", invitesDataError);
     return;
   }
 
-  // Extract the team IDs from the result
-  const teamIds = membershipsData.map((membership) => membership.team_id);
-
-  // Fetch the teams using the team IDs
-  const { data: teamsData, error: teamsError } = await supabase
-    .from("teams")
-    .select("*")
-    .in("id", teamIds);
-
-  if (teamsError) {
-    console.error("Error fetching teams:", teamsError);
+  const [userCourses, userCoursesError] = await getUserCourses(user.id);
+  if (!userCourses) {
+    console.error("Error fetching user courses:", userCoursesError);
     return;
-  }
-
-  if (!teamsData) {
-    redirect("/signin");
   }
 
   return (
     <SettingsShell
-      profile={profile}
-      allTeams={teamsData}
-      team={team}
+      user={user}
+      allCourses={userCourses}
+      course={courseData}
       title="Members"
-      description={`Manage and invite team members`}
+      description={`Manage and invite course members`}
     >
       <MembersComponent
-        team={team}
-        user={profile}
-        teamMembers={membersData}
-        teamInvites={filteredInvites}
+        course={courseData}
+        user={user}
+        courseMembers={membersData}
+        courseInvites={invitesData}
         userMember={userMember}
-        teamMembersProfiles={profilesData}
+        courseUsers={usersData}
       />
     </SettingsShell>
   );

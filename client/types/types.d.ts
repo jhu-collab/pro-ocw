@@ -63,3 +63,14 @@ export interface Member {
   userId: string;
   courseId: string;
 }
+
+export interface CreateInvite {
+  courseId: string;
+  userId: string;
+  role: Role;
+  email: string;
+}
+
+export interface BatchCreateInvite {
+  data: CreateInvite[];
+}
