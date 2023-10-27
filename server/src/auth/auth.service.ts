@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
-import { AuthCredentialsDto } from './auth-credentials.dto';
+import { SignUpDto } from './auth-credentials.dto';
 import { JwtService } from '@nestjs/jwt';
 import { CurrentUserInfo } from 'src/users/user.dto';
 
@@ -20,8 +20,8 @@ export class AuthService {
     return null;
   }
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    return this.usersService.createUser(authCredentialsDto);
+  async signUp(signUpDto: SignUpDto): Promise<void> {
+    return this.usersService.createUser(signUpDto);
   }
 
   async signIn(user: any) {

@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
-import { AuthCredentialsDto } from './auth-credentials.dto';
+import { AuthCredentialsDto, SignUpDto } from './auth-credentials.dto';
 import { AuthService } from './auth.service';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/users/get-user-decorator';
@@ -31,8 +31,8 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    return this.authService.signUp(authCredentialsDto);
+  signUp(@Body() signUpDto: SignUpDto): Promise<void> {
+    return this.authService.signUp(signUpDto);
   }
 
   @Get('current-user')

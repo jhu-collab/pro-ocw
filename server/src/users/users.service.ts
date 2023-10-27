@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './users.repository';
 import { User } from './user.entity';
-import { AuthCredentialsDto } from 'src/auth/auth-credentials.dto';
+import { SignUpDto } from 'src/auth/auth-credentials.dto';
 import { UpdateUserDto } from './user.dto';
 import { MembersService } from 'src/members/members.service';
 
@@ -16,8 +16,8 @@ export class UsersService {
     return await this.userRepository.findOneBy({ email });
   }
 
-  async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    return this.userRepository.createUser(authCredentialsDto);
+  async createUser(signUpDto: SignUpDto): Promise<void> {
+    return this.userRepository.createUser(signUpDto);
   }
 
   async updateUser(

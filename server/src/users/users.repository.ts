@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
-import { AuthCredentialsDto } from 'src/auth/auth-credentials.dto';
+import { SignUpDto } from 'src/auth/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './user.dto';
 
@@ -11,12 +11,12 @@ export class UserRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { email, password } = authCredentialsDto;
+  async createUser(signUpDto: SignUpDto): Promise<void> {
+    const { email, password, fullName } = signUpDto;
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = this.create({ email, password: hashedPassword });
+    const user = this.create({ email, password: hashedPassword, fullName });
 
     try {
       await this.save(user);
