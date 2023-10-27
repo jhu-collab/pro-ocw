@@ -29,7 +29,6 @@ export default async function Profile({
   if (!coursesData || !course) {
     return redirect("/signin");
   }
-  console.log(user);
 
   return (
     <SettingsShell

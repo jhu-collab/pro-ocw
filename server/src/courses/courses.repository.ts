@@ -2,6 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Course } from './course.entity';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class CourseRepository extends Repository<Course> {
@@ -62,11 +63,11 @@ export class CourseRepository extends Repository<Course> {
     return await query.getMany();
   }
 
-  async getInvitedCoursesByUserId(userId: string): Promise<Course[]> {
+  async getInvitedCoursesByUserEmail(email: string): Promise<Course[]> {
     const query = this.createQueryBuilder('course');
     query.leftJoin('course.invites', 'invite');
-    query.leftJoin('invite.user', 'user');
-    query.where('user.id = :userId', { userId });
+    query.leftJoin(User, 'user', 'invite.email = user.email');
+    query.where('user.email = :email', { email });
     return await query.getMany();
   }
 }

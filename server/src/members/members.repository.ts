@@ -16,6 +16,14 @@ export class MemberRepository extends Repository<Member> {
       userId,
       role,
     });
-    return await this.save(member);
+    try {
+      return await this.save(member);
+    } catch (err) {
+      if (err.code === '23505') {
+        // ignore duplicate member
+        return member;
+      }
+      throw err;
+    }
   }
 }

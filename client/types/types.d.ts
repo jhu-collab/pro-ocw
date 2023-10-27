@@ -62,6 +62,7 @@ export interface Member {
   role: Role;
   userId: string;
   courseId: string;
+  user?: User;
 }
 
 export interface CreateInvite {

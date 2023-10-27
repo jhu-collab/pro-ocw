@@ -23,6 +23,7 @@ const ProfileComponent = ({ user }: { user: User }) => {
 
     if (error) {
       toast({
+        variant: "destructive",
         title: "Failed to update profile",
         description: error.response.data.message,
       });

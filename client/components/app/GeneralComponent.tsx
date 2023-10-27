@@ -48,6 +48,7 @@ export default function GeneralComponent({
     const [_, error] = await leaveCourse(userMembership.userId, course.id);
     if (error) {
       toast({
+        variant: "destructive",
         title: "Error",
         description: error.response.data.message || "Something went wrong",
       });
@@ -66,6 +67,7 @@ export default function GeneralComponent({
     const [_, error] = await deleteCourse(course.id);
     if (error) {
       toast({
+        variant: "destructive",
         title: "Error",
         description: error.response.data.message || "Something went wrong",
       });
@@ -78,6 +80,7 @@ export default function GeneralComponent({
     const [_, error] = await updateCourse(course.id, courseInfo);
     if (error) {
       toast({
+        variant: "destructive",
         title: "Error",
         description: error.response.data.message || "Something went wrong",
       });

@@ -8,6 +8,7 @@ import { CourseRepository } from './courses.repository';
 import { Course } from './course.entity';
 import { MembersService } from 'src/members/members.service';
 import { Role } from 'src/members/role.enum';
+import { CurrentUserInfo } from 'src/users/user.dto';
 
 @Injectable()
 export class CoursesService {
@@ -27,13 +28,15 @@ export class CoursesService {
 
   async getInvitedCoursesByUserId(
     userId: string,
-    currentUserId: string,
+    currentUser: CurrentUserInfo,
   ): Promise<Course[]> {
-    if (userId !== currentUserId) {
+    if (userId !== currentUser.userId) {
       throw new Error('Not authorized to get invited courses for user');
     }
 
-    return this.courseRepository.getInvitedCoursesByUserId(userId);
+    return this.courseRepository.getInvitedCoursesByUserEmail(
+      currentUser.email,
+    );
   }
 
   async updateCourse(

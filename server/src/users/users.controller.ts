@@ -32,7 +32,7 @@ export class UsersController {
     @Param('userId') userId: string,
     @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Invite[]> {
-    return this.inviteService.getInvitesByUserId(userId, currentUser.userId);
+    return this.inviteService.getInvitesByUser(userId, currentUser);
   }
 
   @Get('/:userId/invited-courses')
@@ -40,10 +40,7 @@ export class UsersController {
     @Param('userId') userId: string,
     @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Course[]> {
-    return this.courseService.getInvitedCoursesByUserId(
-      userId,
-      currentUser.userId,
-    );
+    return this.courseService.getInvitedCoursesByUserId(userId, currentUser);
   }
 
   @Get('/:userId/courses')

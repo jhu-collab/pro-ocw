@@ -30,7 +30,7 @@ export class Invite {
   public send: boolean;
 
   @Column()
-  public userId: string;
+  public userId: string; // the id of the user who sent the invite
 
   @Column()
   public courseId: string;
@@ -39,7 +39,7 @@ export class Invite {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  public user: User;
+  public user: User; // the user who sent the invite
 
   @ManyToOne(() => Course, (course) => course.invites, {
     cascade: true,

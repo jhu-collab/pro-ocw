@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -8,6 +9,8 @@ import { Invite } from './invite.entity';
 import { CreateInviteDto, InviteByCourseAndUserDto } from './invite.dto';
 import { Member } from 'src/members/member.entity';
 import { MembersService } from 'src/members/members.service';
+import { CurrentUserInfo } from 'src/users/user.dto';
+import { CreateMemberDto } from 'src/members/member.dto';
 
 @Injectable()
 export class InvitesService {
@@ -16,9 +19,9 @@ export class InvitesService {
     private memberService: MembersService,
   ) {}
 
-  async getInviteById(id: string, userId: string): Promise<Invite> {
+  async getInviteById(id: string, email: string): Promise<Invite> {
     const invite = await this.inviteRepository.findOne({
-      where: { id, userId },
+      where: { id, email },
       relations: { course: true },
     });
     if (!invite) {
@@ -46,7 +49,7 @@ export class InvitesService {
       (invite) => invite.courseId === courseId,
     );
     if (!sameCourse) {
-      throw new ForbiddenException('All invites must be for the same course');
+      throw new BadRequestException('All invites must be for the same course');
     }
     if (!(await this.memberService.isInstructorOrTA({ courseId, userId }))) {
       throw new ForbiddenException('Only instructors or TAs can invite users');
@@ -54,9 +57,17 @@ export class InvitesService {
     return await this.inviteRepository.batchCreateInvite(batchCreateInviteDto);
   }
 
-  async acceptInvite(inviteId: string, userId: string): Promise<Member> {
-    const invite = await this.getInviteById(inviteId, userId);
-    const member = await this.memberService.createMember(invite);
+  async acceptInvite(
+    inviteId: string,
+    currentUser: CurrentUserInfo,
+  ): Promise<Member> {
+    const invite = await this.getInviteById(inviteId, currentUser.email);
+    const memberToCreate: CreateMemberDto = {
+      courseId: invite.courseId,
+      userId: currentUser.userId,
+      role: invite.role,
+    };
+    const member = await this.memberService.createMember(memberToCreate);
     await this.deleteInviteById(inviteId);
     return member;
   }
@@ -91,14 +102,14 @@ export class InvitesService {
     return invite;
   }
 
-  async getInvitesByUserId(
+  async getInvitesByUser(
     userId: string,
-    currentUserId: string,
+    currentUser: CurrentUserInfo,
   ): Promise<Invite[]> {
-    if (userId !== currentUserId) {
+    if (userId !== currentUser.userId) {
       throw new NotFoundException('Invites not found');
     }
-    return await this.inviteRepository.findBy({ userId });
+    return await this.inviteRepository.findBy({ email: currentUser.email });
   }
 
   async deleteInvite(inviteId: string, userId: string): Promise<void> {

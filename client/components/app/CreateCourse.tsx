@@ -85,6 +85,7 @@ export default function CreateCourse({ user }: { user: User }) {
       });
       if (!created || courseError) {
         toast({
+          variant: "destructive",
           title: "Error creating course",
           description:
             courseError.response.data.message || "Something went wrong",

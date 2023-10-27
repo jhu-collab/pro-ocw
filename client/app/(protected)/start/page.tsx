@@ -1,5 +1,10 @@
 import Start from "@/components/app/Start";
-import { getCourses, getInvitedCourses, getInvites, getUser } from "@/lib/server";
+import {
+  getCourses,
+  getInvitedCourses,
+  getInvites,
+  getUser,
+} from "@/lib/server";
 
 export const revalidate = 0;
 
@@ -15,12 +20,13 @@ export default async function StartPage() {
     return;
   }
 
-  const [invitedCourses, invitedCoursesError] = await getInvitedCourses(user!.id);
+  const [invitedCourses, invitedCoursesError] = await getInvitedCourses(
+    user!.id
+  );
   if (invitedCoursesError) {
     console.error("Error fetching invited courses:", invitedCoursesError);
     return;
   }
-
   const [invitesData, invitesError] = await getInvites(user!.id);
   if (invitesError) {
     console.error("Error fetching user invites:", invitesError);

@@ -17,7 +17,7 @@ export class InvitesController {
     @Param('id') id: string,
     @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Invite> {
-    return this.inviteService.getInviteById(id, currentUser.userId);
+    return this.inviteService.getInviteById(id, currentUser.email);
   }
 
   @Get('/:id')
@@ -41,7 +41,7 @@ export class InvitesController {
     @Param('id') id: string,
     @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Member> {
-    return this.inviteService.acceptInvite(id, currentUser.userId);
+    return this.inviteService.acceptInvite(id, currentUser);
   }
 
   @Delete('/:id')

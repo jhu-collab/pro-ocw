@@ -24,7 +24,10 @@ export class MembersService {
     if (!isMember) {
       throw new NotFoundException('Members not found');
     }
-    return await this.memberRepository.findBy({ courseId });
+    return await this.memberRepository.find({
+      where: { courseId },
+      relations: ['user'],
+    });
   }
 
   async getMemberByCourseAndUser(

@@ -22,16 +22,18 @@ import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { Course, User, Invite, Member, Role } from "@/types/types";
 import { batchCreateInvite, deleteInviteById } from "@/lib/api";
-import { ROLE_STUDENT } from "@/constants";
+import { ROLES, ROLE_INSTRUCTOR, ROLE_STUDENT, ROLE_TA } from "@/constants";
 
 const InviteSection = ({ course, user }: { course: Course; user: User }) => {
   const [loading, setLoading] = useState(false);
-  const [invites, setInvites] = useState<{email: string, role: Role}[]>([{ email: "", role: ROLE_STUDENT }]);
+  const [invites, setInvites] = useState<{ email: string; role: Role }[]>([
+    { email: "", role: ROLE_STUDENT },
+  ]);
   const { toast } = useToast();
   const router = useRouter();
 
   const handleAddInvite = useCallback(() => {
-    setInvites((invites) => [...invites, { email: "", role: "MEMBER" }]);
+    setInvites((invites) => [...invites, { email: "", role: ROLE_STUDENT }]);
   }, []);
 
   const handleChangeEmail = useCallback((i: number, value: string) => {
@@ -72,7 +74,7 @@ const InviteSection = ({ course, user }: { course: Course; user: User }) => {
 
     setLoading(true);
 
-    const [createInviteResult, createInviteResultError] = await batchCreateInvite({
+    const [_, error] = await batchCreateInvite({
       data: invitesToCreate.map((invite) => ({
         email: invite.email,
         role: invite.role,
@@ -80,17 +82,23 @@ const InviteSection = ({ course, user }: { course: Course; user: User }) => {
         userId: user.id,
       })),
     });
-
+    setLoading(false);
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.response.data.message || error.message,
+      });
+      return;
+    }
     toast({
       title: "Invites sent!",
       description: "Your invites have been sent.",
     });
 
-    setInvites([{ email: "", role: "MEMBER" }]);
+    setInvites([{ email: "", role: ROLE_STUDENT }]);
 
     router.refresh();
-
-    setLoading(false);
   }, [course, invites, router, toast, user]);
 
   return (
@@ -173,9 +181,14 @@ const InvitedSection = ({
     async (invite: Invite) => {
       if (!confirm("Are you sure you want to delete this invite?")) return;
 
-      const [deleteResult, deleteResultError] = await deleteInviteById(invite.id)
-      if (deleteResultError) {
-        console.error("Error deleting invite:", deleteResultError);
+      const [_, error] = await deleteInviteById(invite.id);
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error.response.data.message || error.message,
+        });
+
         return;
       }
 
@@ -259,22 +272,20 @@ const MembersSection = ({
   user,
   userMember,
   courseMembers,
-  courseUsers,
 }: {
   course: Course;
   user: User;
   userMember: Member;
   courseMembers: Member[];
-  courseUsers: User[];
 }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const handleUpdateRole = useCallback(
     async (member: Member, role: Role) => {
-      if (!team) return;
+      if (!course) return;
 
-      if (member.user_id === user.id) {
+      if (member.userId === user.id) {
         toast({
           variant: "destructive",
           title: "You can't change your own role",
@@ -292,14 +303,14 @@ const MembersSection = ({
 
       setLoading(false);
     },
-    [team, user, toast]
+    [course, user, toast]
   );
 
   const handleRemoveMember = useCallback(
     async (member: Member) => {
-      if (!team) return;
+      if (!course) return;
 
-      if (member.user_id === user?.id) {
+      if (member.userId === user?.id) {
         toast({
           variant: "destructive",
           title: "You can't remove yourself",
@@ -315,18 +326,19 @@ const MembersSection = ({
         description: `Removed from the team`,
       });
     },
-    [team, user, toast]
+    [course, user, toast]
   );
 
-  if (!user || !team || !teamMembers || !teamMembersProfiles) return null;
+  if (!user || !course || !courseMembers) return null;
 
-  const isAdmin = userMember.role === ROLE_ADMIN;
+  const isAdmin =
+    userMember.role === ROLE_INSTRUCTOR || userMember.role === ROLE_TA;
 
   return (
     <>
-      {teamMembers.map((m) => {
+      {courseMembers.map((m) => {
         const role = m.role;
-        const profile = teamMembersProfiles.find((p) => p.id === m.user_id);
+        const profile = m.user;
         return (
           <div
             className="flex justify-between border-b border-gray-100 py-3 px-4 last-of-type:border-none"
@@ -335,20 +347,20 @@ const MembersSection = ({
             <div className="flex items-center gap-x-2">
               <Avatar>
                 <AvatarFallback>
-                  {(profile?.full_name ?? profile?.email ?? "")[0]}
+                  {(profile?.fullName ?? profile?.email ?? "")[0]}
                 </AvatarFallback>
                 <AvatarImage src={undefined} />
               </Avatar>
               <div className="flex flex-col">
                 <p className="font-medium">
-                  {profile?.full_name ?? profile?.email ?? "Unknown"}
+                  {profile?.fullName ?? profile?.email ?? "Unknown"}
                 </p>
                 <p className="text-gray-500">{profile?.email}</p>
               </div>
             </div>
             <div className="flex items-center gap-x-6">
               <div className="">
-                {user.id === m.user_id || !isAdmin ? (
+                {user.id === m.userId || !isAdmin ? (
                   <span className="text-gray-500">
                     {role[0].toUpperCase() + role.slice(1).toLowerCase()}
                   </span>
@@ -364,10 +376,7 @@ const MembersSection = ({
                       {ROLES.map((r) => {
                         return (
                           <SelectItem value={r} key={r}>
-                            {
-                              // convert to title case
-                              r[0].toUpperCase() + r.slice(1).toLowerCase()
-                            }
+                            {r[0].toUpperCase() + r.slice(1).toLowerCase()}
                           </SelectItem>
                         );
                       })}
@@ -375,7 +384,7 @@ const MembersSection = ({
                   </Select>
                 )}
               </div>
-              {user.id !== m.user_id && (
+              {user.id !== m.userId && isAdmin && (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <MoreHorizontal className="w-4 text-gray-500" />
@@ -406,32 +415,33 @@ export default function MembersComponent({
   courseMembers,
   courseInvites,
   userMember,
-  courseUsers,
 }: {
   course: Course;
   user: User;
   userMember: Member;
   courseMembers: Member[];
   courseInvites: Invite[];
-  courseUsers: User[];
 }) {
+  const isAdmin =
+    userMember.role === ROLE_INSTRUCTOR || userMember.role === ROLE_TA;
   return (
     <div className="flex flex-col gap-y-8">
-      <InviteSection course={course} user={user} />
+      {isAdmin && <InviteSection course={course} user={user} />}
       <div className="flex flex-col rounded-lg border bg-white">
         <h3 className="ml-6 mt-4 text-lg font-medium">Members</h3>
         <Tabs defaultValue="members" className="pb-2">
-          <TabsList className="ml-4 mt-3 mb-1">
-            <TabsTrigger value="members">Members</TabsTrigger>
-            <TabsTrigger value="invited">Invited</TabsTrigger>
-          </TabsList>
+          {isAdmin && (
+            <TabsList className="ml-4 mt-3 mb-1">
+              <TabsTrigger value="members">Members</TabsTrigger>
+              <TabsTrigger value="invited">Invited</TabsTrigger>
+            </TabsList>
+          )}
           <TabsContent value="members">
             <MembersSection
               course={course}
               user={user}
               userMember={userMember}
               courseMembers={courseMembers}
-              courseUsers={courseUsers}
             />
           </TabsContent>
           <TabsContent value="invited">

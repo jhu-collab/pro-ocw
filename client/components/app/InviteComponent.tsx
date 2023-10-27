@@ -13,6 +13,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Course, User, Invite } from "@/types/types";
 import { acceptInvite } from "@/lib/api";
+import { useToast } from "../ui/use-toast";
 
 export default function InviteComponent({
   course,
@@ -24,6 +25,7 @@ export default function InviteComponent({
   invite: Invite;
 }) {
   const router = useRouter();
+  const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
 
@@ -31,12 +33,16 @@ export default function InviteComponent({
 
   const handleJoin = async () => {
     setLoading(true);
-    const [_, memberDataError] = await acceptInvite(invite.id);
-    if (memberDataError) {
-      console.log("memberDataError: ", memberDataError);
+    const [_, error] = await acceptInvite(invite.id);
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.response.data.message || "Something went wrong.",
+      });
       setLoading(false);
     } else {
-      router.push(`/${course.id}`);
+      router.push(`/${course.coursebookId}`);
     }
   };
 
@@ -47,7 +53,7 @@ export default function InviteComponent({
           <CardHeader>
             <CardTitle className="text-center">Course Invitation</CardTitle>
             <CardDescription className="text-center">
-              Join {course.name} 
+              Join {course.name}
             </CardDescription>
           </CardHeader>
           <CardContent>

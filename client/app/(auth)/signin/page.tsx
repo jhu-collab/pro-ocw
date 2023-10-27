@@ -38,6 +38,7 @@ export default function SignInPage() {
         setIsLoading(false);
 
         toast({
+          variant: "destructive",
           title: "Error",
           description: "Invalid email or password",
         });

@@ -7,7 +7,6 @@ import {
   getUser,
   getUserCourses,
   getUserMemebershipByCourseId,
-  getUsersByCourseId,
 } from "@/lib/server";
 
 import { redirect } from "next/navigation";
@@ -60,13 +59,6 @@ export default async function MembersPage({
     return;
   }
 
-  // Then, get the user information for each user ID
-  const [usersData, usersDataError] = await getUsersByCourseId(courseData.id);
-  if (!usersData) {
-    console.error("Error fetching users data:", usersDataError);
-    return;
-  }
-
   // get all the invites of the team
   const [invitesData, invitesDataError] = await getInvitesByCourseId(
     courseData.id
@@ -96,7 +88,6 @@ export default async function MembersPage({
         courseMembers={membersData}
         courseInvites={invitesData}
         userMember={userMember}
-        courseUsers={usersData}
       />
     </SettingsShell>
   );
