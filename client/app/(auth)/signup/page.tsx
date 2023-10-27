@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { signup } from "@/lib/api";
+import Link from "next/link";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -111,6 +112,13 @@ export default function SignInPage() {
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign up
           </Button>
+
+          <div className="flex flex-col text-center">
+            <label className="mb-2 font-light" htmlFor="signin">
+              Already have an account? <Link href={"/signin"}> Sign in </Link>
+            </label>
+          </div>
+
         </form>
       </div>
     </div>
