@@ -77,7 +77,10 @@ export default function UserProfileButton({
           Documentation
         </MenuItem>
         <MenuItem
-          onClick={() => router.push("/api/auth/signout")}
+          onClick={() => {
+            router.push("/api/auth/signout");
+            router.refresh();
+          }}
           className="text-gray-500"
         >
           <LogOut className="w-4" />
