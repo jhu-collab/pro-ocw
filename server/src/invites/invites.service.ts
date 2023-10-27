@@ -100,4 +100,17 @@ export class InvitesService {
     }
     return await this.inviteRepository.findBy({ userId });
   }
+
+  async deleteInvite(inviteId: string, userId: string): Promise<void> {
+    const invite = await this.getInviteById(inviteId, userId);
+    const isInstructorOrTA = await this.memberService.isInstructorOrTA({
+      courseId: invite.courseId,
+      userId,
+    });
+
+    if (!isInstructorOrTA) {
+      throw new ForbiddenException('Not authorized to delete invite');
+    }
+    await this.deleteInviteById(inviteId);
+  }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { InvitesService } from './invites.service';
 import { Invite } from './invite.entity';
 import { BatchCreateInviteDto } from './invite.dto';
@@ -42,5 +42,13 @@ export class InvitesController {
     @CurrentUser() currentUser: CurrentUserInfo,
   ): Promise<Member> {
     return this.inviteService.acceptInvite(id, currentUser.userId);
+  }
+
+  @Delete('/:id')
+  async deleteInvite(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: CurrentUserInfo,
+  ): Promise<void> {
+    return this.inviteService.deleteInvite(id, currentUser.userId);
   }
 }
