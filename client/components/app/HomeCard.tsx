@@ -27,7 +27,13 @@ const HomeCard = () => {
             <ArrowRight className="mr-2 w-4" /> Go Home
           </Button>
         </Link>
-        <Button variant="link" onClick={() => router.push("/api/auth/signout")}>
+        <Button
+          variant="link"
+          onClick={() => {
+            router.push("/api/auth/signout");
+            router.refresh();
+          }}
+        >
           Sign Out
         </Button>
       </div>

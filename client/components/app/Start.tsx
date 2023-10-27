@@ -53,6 +53,7 @@ export default function Start({
                 variant={"outline"}
                 onClick={async () => {
                   router.push("/api/auth/signout");
+                  router.refresh();
                 }}
               >
                 Sign Out
