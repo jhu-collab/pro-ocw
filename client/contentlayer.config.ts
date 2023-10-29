@@ -135,6 +135,11 @@ export const CourseBook = defineDocumentType(() => ({
       type: "string",
       required: true,
     },
+    published: {
+      type: "boolean",
+      required: true,
+      default: true,
+    },
   },
   computedFields: {
     url_path: {

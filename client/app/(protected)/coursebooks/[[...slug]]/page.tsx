@@ -13,7 +13,7 @@ import { Coursebook, allCoursebooks } from "contentlayer/generated";
 import { capitalize } from "lodash";
 import { SidebarClose, SidebarOpen } from "lucide-react";
 import NextLink from "next/link";
-import { usePathname } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import type { FC } from "react";
 import { useState } from "react";
 
@@ -154,24 +154,24 @@ const Coursebook = ({
 }) => {
   const { slug } = params;
   const pagePath = (slug && slug.join("/")) ?? "";
-
-  const coursebook = allCoursebooks.find(
-    (d) =>
-      d.pathSegments.map((ps: PathSegment) => ps.name).join("/") === pagePath
+  const publishedCoursebooks = allCoursebooks.filter((c) => c.published);
+  const coursebook = publishedCoursebooks.find(
+    (c) =>
+      c.pathSegments.map((ps: PathSegment) => ps.name).join("/") === pagePath &&
+      c.published
   );
 
   if (!coursebook) {
-    throw new Error(`No coursebook found for slug: ${slug}`);
+    notFound();
   }
 
-  const currentCoursebook = allCoursebooks.filter(
+  const currentCoursebook = publishedCoursebooks.filter(
     (d) => d.pathSegments[0].name === slug[0]
   );
 
   const toc = constructTOC(currentCoursebook, "Table of Contents");
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
   return (
     <div className="relative">
       <Head

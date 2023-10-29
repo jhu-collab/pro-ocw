@@ -1,5 +1,5 @@
 import { getCourseByCoursebookId, getUser } from "@/lib/server";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -26,12 +26,11 @@ export default async function ProtectedLayout({
   const pathname = headersList.get("x-invoke-path") || "";
   const coursebookId = getCoursebookId(pathname);
   if (!coursebookId) {
-    return <div>Coursebook not found</div>;
+    notFound();
   }
   const [course, courseError] = await getCourseByCoursebookId(coursebookId);
   if (!course || courseError) {
-    // user is not a member of this course or course not found
-    return <div>Course not found</div>;
+    notFound();
   }
 
   return <div>{children}</div>;
