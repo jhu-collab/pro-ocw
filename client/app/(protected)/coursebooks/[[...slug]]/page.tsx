@@ -168,8 +168,7 @@ const Coursebook = ({
     (d) => d.pathSegments[0].name === slug[0]
   );
 
-  const toc = constructTOC(currentCoursebook, null);
-  // console.log(toc);
+  const toc = constructTOC(currentCoursebook, "Table of Contents");
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
