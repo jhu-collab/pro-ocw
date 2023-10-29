@@ -17,27 +17,31 @@ import { usePathname } from "next/navigation";
 import type { FC } from "react";
 import { useState } from "react";
 
-type NavTreeNode = {
+type TOCTreeNode = {
   title: string | null;
   href: string | null;
-  children: NavTreeNode[];
+  children: TOCTreeNode[];
 };
 
 const constructTOC = (
-  docs: Coursebook[],
+  coursebooks: Coursebook[],
   title: string | null
-): NavTreeNode => {
-  const doc = docs[0];
-  if (doc && docs.length === 1 && doc.pathSegments.length === 0) {
+): TOCTreeNode => {
+  const coursebook = coursebooks[0];
+  if (
+    coursebook &&
+    coursebooks.length === 1 &&
+    coursebook.pathSegments.length === 0
+  ) {
     return {
-      title: title ?? doc.title,
-      href: "/" + doc.url_path,
+      title: title ?? coursebook.title,
+      href: "/" + coursebook.url_path,
       children: [],
     };
   }
 
-  const indexDoc = docs.find((d) => d.pathSegments.length === 0);
-  const remainingDocs = docs.filter((d) => d.pathSegments.length > 0);
+  const indexDoc = coursebooks.find((d) => d.pathSegments.length === 0);
+  const remainingDocs = coursebooks.filter((d) => d.pathSegments.length > 0);
 
   const children = Array.from(
     remainingDocs
@@ -66,7 +70,7 @@ const constructTOC = (
 
 type PathSegment = { order: number; name: string };
 
-const PageContents: FC<{ headings: DocHeading[] }> = ({ headings }) => {
+const HeadingsSidebar: FC<{ headings: DocHeading[] }> = ({ headings }) => {
   const headingsToRender = headings.filter((h) => h.level > 1);
 
   if ((headingsToRender ?? []).length === 0) return null;
@@ -95,8 +99,8 @@ const PageContents: FC<{ headings: DocHeading[] }> = ({ headings }) => {
   );
 };
 
-const DocsContents: React.FC<{
-  node: NavTreeNode;
+const TOCItem: React.FC<{
+  node: TOCTreeNode;
   level?: number;
   onNav?: () => void;
 }> = ({ node, level = 0, onNav }) => {
@@ -134,19 +138,14 @@ const DocsContents: React.FC<{
         })}
       >
         {node.children.map((child, index) => (
-          <DocsContents
-            level={level + 1}
-            key={index}
-            node={child}
-            onNav={onNav}
-          />
+          <TOCItem level={level + 1} key={index} node={child} onNav={onNav} />
         ))}
       </div>
     </>
   );
 };
 
-const Doc = ({
+const Coursebook = ({
   params,
 }: {
   params: {
@@ -156,13 +155,13 @@ const Doc = ({
   const { slug } = params;
   const pagePath = (slug && slug.join("/")) ?? "";
 
-  const doc = allCoursebooks.find(
+  const coursebook = allCoursebooks.find(
     (d) =>
       d.pathSegments.map((ps: PathSegment) => ps.name).join("/") === pagePath
   );
 
-  if (!doc) {
-    throw new Error(`No doc found for slug: ${slug}`);
+  if (!coursebook) {
+    throw new Error(`No coursebook found for slug: ${slug}`);
   }
 
   const currentCoursebook = allCoursebooks.filter(
@@ -176,7 +175,11 @@ const Doc = ({
 
   return (
     <div className="relative">
-      <Head title={doc.title} description={doc.excerpt} image={""} />
+      <Head
+        title={coursebook.title}
+        description={coursebook.excerpt}
+        image={""}
+      />
       <Button
         className="fixed bottom-8 right-8 z-10 h-16 w-16 rounded-full shadow-xl-outline md:hidden"
         onClick={() => setMobileSidebarOpen((x) => !x)}
@@ -193,7 +196,7 @@ const Doc = ({
       <div className="mx-auto flex max-w-[90rem]">
         {/* desktop nav tree */}
         <aside className="sticky top-20 hidden h-full shrink-0 overflow-auto px-4 py-5 md:block md:w-[320px]">
-          <DocsContents node={toc} onNav={() => setMobileSidebarOpen(false)} />
+          <TOCItem node={toc} onNav={() => setMobileSidebarOpen(false)} />
         </aside>
         {/* mobile nav tree */}
         {mobileSidebarOpen && (
@@ -205,10 +208,7 @@ const Doc = ({
             <div className="fixed inset-y-0 left-0 z-50 w-2/3 max-w-[320px] animate-slideRightAndFadeIn bg-white p-4 md:hidden">
               <Logo variant="wordmark" className="" />
               <div className="h-8" />
-              <DocsContents
-                node={toc}
-                onNav={() => setMobileSidebarOpen(false)}
-              />
+              <TOCItem node={toc} onNav={() => setMobileSidebarOpen(false)} />
             </div>
           </>
         )}
@@ -218,11 +218,11 @@ const Doc = ({
           )}
         >
           <div className="w-full">
-            <MDX content={doc.body.code} />
+            <MDX content={coursebook.body.code} />
           </div>
         </article>
         <nav className="sticky top-20 hidden h-full shrink-0 overflow-auto px-4 py-5 md:w-[280px] lg:block">
-          <PageContents headings={doc.headings} />
+          <HeadingsSidebar headings={coursebook.headings} />
         </nav>
       </div>
       <Separator />
@@ -231,4 +231,4 @@ const Doc = ({
   );
 };
 
-export default Doc;
+export default Coursebook;
