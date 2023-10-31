@@ -157,19 +157,18 @@ const Coursebook = ({
   const publishedCoursebooks = allCoursebooks.filter((c) => c.published);
   const coursebook = publishedCoursebooks.find(
     (c) =>
-      c.pathSegments.map((ps: PathSegment) => ps.name).join("/") === pagePath &&
-      c.published
+      c.pathSegments.map((ps: PathSegment) => ps.name).join("/") === pagePath
   );
 
   if (!coursebook) {
     notFound();
   }
 
-  const currentCoursebook = publishedCoursebooks.filter(
+  const coursebookForCurrentCourse = publishedCoursebooks.filter(
     (d) => d.pathSegments[0].name === slug[0]
   );
 
-  const toc = constructTOC(currentCoursebook, "Table of Contents");
+  const toc = constructTOC(coursebookForCurrentCourse, "Table of Contents");
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   return (
