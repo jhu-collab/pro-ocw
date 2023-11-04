@@ -1,4 +1,4 @@
-import { Role } from 'src/members/role.enum';
+import { Role } from 'src/commons/role.enum';
 import {
   IsUUID,
   IsEmail,

@@ -7,14 +7,16 @@ import {
 import { CourseRepository } from './courses.repository';
 import { Course } from './course.entity';
 import { MembersService } from 'src/members/members.service';
-import { Role } from 'src/members/role.enum';
+import { Role } from 'src/commons/role.enum';
 import { CurrentUserInfo } from 'src/users/user.dto';
+import { InviteLinksService } from 'src/invite-links/invite-links.service';
 
 @Injectable()
 export class CoursesService {
   constructor(
     private courseRepository: CourseRepository,
     private memberService: MembersService,
+    private inviteLinksService: InviteLinksService,
   ) {}
 
   async getCourse(courseId: string, userId: string): Promise<Course> {
@@ -59,12 +61,15 @@ export class CoursesService {
     ownerId: string,
   ): Promise<Course> {
     const course = await this.courseRepository.createCourse(createCourseDto);
+    await this.inviteLinksService.createInviteLinks(course.id);
+
     // Add the owner as an instructor by default
     await this.memberService.createMember({
       role: Role.INSTRUCTOR,
       userId: ownerId,
       courseId: course.id,
     });
+
     return course;
   }
 
@@ -103,8 +108,9 @@ export class CoursesService {
     if (!coursebookId) {
       throw new NotFoundException('Please provide a coursebook id');
     }
-    const res = await this.courseRepository.findOneBy({
-      coursebookId,
+    const res = await this.courseRepository.findOne({
+      where: { coursebookId },
+      relations: ['inviteLinks'],
     });
     if (!res) {
       throw new NotFoundException('Course not found');

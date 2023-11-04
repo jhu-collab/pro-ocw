@@ -10,7 +10,7 @@ import {
   UpdateMemberDto,
 } from './member.dto';
 import { Member } from './member.entity';
-import { Role } from './role.enum';
+import { Role } from '../commons/role.enum';
 
 @Injectable()
 export class MembersService {

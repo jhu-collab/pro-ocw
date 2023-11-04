@@ -9,6 +9,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { InviteLinksModule } from './invite-links/invite-links.module';
+import { CommonsModule } from './commons/commons.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     InvitesModule,
     CoursesModule,
     AuthModule,
+    InviteLinksModule,
+    CommonsModule,
   ],
   providers: [
     {

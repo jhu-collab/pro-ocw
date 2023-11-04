@@ -1,3 +1,4 @@
+import { InviteLink } from 'src/invite-links/invite-link.entity';
 import { Invite } from 'src/invites/invite.entity';
 import { Member } from 'src/members/member.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -36,4 +37,7 @@ export class Course {
 
   @OneToMany(() => Invite, (invite) => invite.course)
   public invites: Invite[];
+
+  @OneToMany(() => InviteLink, (inviteLink) => inviteLink.course)
+  public inviteLinks: InviteLink[];
 }

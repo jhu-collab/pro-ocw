@@ -1,5 +1,5 @@
 import { IsUUID, IsEnum } from 'class-validator';
-import { Role } from './role.enum';
+import { Role } from '../commons/role.enum';
 export class CreateMemberDto {
   @IsUUID()
   userId: string;
