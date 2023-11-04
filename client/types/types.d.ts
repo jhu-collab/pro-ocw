@@ -9,12 +9,6 @@ export interface User {
   hasOnboarded: string;
 }
 
-export interface InviteLink {
-  id: string;
-  role: Role;
-  courseId: string;
-}
-
 export interface Course {
   id: string;
   createdAt: string;
@@ -26,6 +20,13 @@ export interface Course {
   year: number;
   courseCode: string;
   inviteLinks?: InviteLink[];
+}
+
+export interface InviteLink {
+  id: string;
+  role: Role;
+  courseId: string;
+  course?: Course;
 }
 
 export interface UpdateCourse {

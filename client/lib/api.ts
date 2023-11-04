@@ -138,3 +138,12 @@ export async function signup(email: string, password: string, fullName: string) 
     return [null, error];
   }
 }
+
+export async function acceptInviteLink(id: string) {
+  try {
+    const { data } = await api.get(`/invite-links/${id}/accept`);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
+  }
+}

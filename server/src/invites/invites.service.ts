@@ -16,7 +16,7 @@ import { CreateMemberDto } from 'src/members/member.dto';
 export class InvitesService {
   constructor(
     private inviteRepository: InviteRepository,
-    private memberService: MembersService,
+    private membersService: MembersService,
   ) {}
 
   async getInviteById(id: string, email: string): Promise<Invite> {
@@ -51,7 +51,7 @@ export class InvitesService {
     if (!sameCourse) {
       throw new BadRequestException('All invites must be for the same course');
     }
-    if (!(await this.memberService.isInstructorOrTA({ courseId, userId }))) {
+    if (!(await this.membersService.isInstructorOrTA({ courseId, userId }))) {
       throw new ForbiddenException('Only instructors or TAs can invite users');
     }
     return await this.inviteRepository.batchCreateInvite(batchCreateInviteDto);
@@ -67,7 +67,7 @@ export class InvitesService {
       userId: currentUser.userId,
       role: invite.role,
     };
-    const member = await this.memberService.createMember(memberToCreate);
+    const member = await this.membersService.createMember(memberToCreate);
     await this.deleteInviteById(inviteId);
     return member;
   }
@@ -76,7 +76,7 @@ export class InvitesService {
     courseId: string,
     userId: string,
   ): Promise<Invite[]> {
-    if (!(await this.memberService.isInstructorOrTA({ courseId, userId }))) {
+    if (!(await this.membersService.isInstructorOrTA({ courseId, userId }))) {
       throw new NotFoundException('Invites not found');
     }
     return this.inviteRepository.findBy({ courseId });
@@ -86,7 +86,7 @@ export class InvitesService {
     inviteByCourseAndUserDto: InviteByCourseAndUserDto,
     userId: string,
   ) {
-    const isInstructorOrTA = await this.memberService.isInstructorOrTA({
+    const isInstructorOrTA = await this.membersService.isInstructorOrTA({
       courseId: inviteByCourseAndUserDto.courseId,
       userId,
     });
@@ -114,7 +114,7 @@ export class InvitesService {
 
   async deleteInvite(inviteId: string, userId: string): Promise<void> {
     const invite = await this.getInviteById(inviteId, userId);
-    const isInstructorOrTA = await this.memberService.isInstructorOrTA({
+    const isInstructorOrTA = await this.membersService.isInstructorOrTA({
       courseId: invite.courseId,
       userId,
     });

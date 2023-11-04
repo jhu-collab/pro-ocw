@@ -1,4 +1,4 @@
-import { Course, User, Invite, Member } from "@/types/types";
+import { Course, User, Invite, Member, InviteLink } from "@/types/types";
 import { cookies } from "next/headers";
 import axios from "axios";
 
@@ -119,7 +119,9 @@ export async function getUserMemebershipByCourseId(
   courseId: string
 ): Promise<[Member | null, any]> {
   try {
-    const { data } = await api.get(`/members/users/${userId}/courses/${courseId}`);
+    const { data } = await api.get(
+      `/members/users/${userId}/courses/${courseId}`
+    );
     return [data, null];
   } catch (error: any) {
     return [null, error];
@@ -156,5 +158,16 @@ export async function getInvitesByCourseId(
     return [data, null];
   } catch (error: any) {
     return [[], error];
+  }
+}
+
+export async function getInviteLinkById(
+  inviteLinkId: string
+): Promise<[InviteLink | null, any]> {
+  try {
+    const { data } = await api.get(`/invite-links/${inviteLinkId}`);
+    return [data, null];
+  } catch (error: any) {
+    return [null, error];
   }
 }
