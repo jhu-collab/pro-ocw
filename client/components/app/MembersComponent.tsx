@@ -137,12 +137,15 @@ const InviteSection = ({ course, user }: { course: Course; user: User }) => {
                   </SelectTrigger>
                   <SelectContent>
                     {ROLES.map((role) => {
-                      const formattedRole =
-                        role.charAt(0).toUpperCase() +
-                        role.slice(1).toLowerCase();
                       return (
                         <SelectItem key={role} value={role}>
-                          {formattedRole}
+                          {
+                            {
+                              [ROLE_INSTRUCTOR]: "Instructor",
+                              [ROLE_TA]: "Teaching Assistant",
+                              [ROLE_STUDENT]: "Student",
+                            }[role]
+                          }
                         </SelectItem>
                       );
                     })}
@@ -177,7 +180,7 @@ const InviteLinkTab = ({ title, link }: { title: string; link: string }) => {
     <div className="flex justify-between border-b border-gray-100 py-3 px-4 last-of-type:border-none">
       <div className="flex items-center gap-x-2">
         <div className="flex flex-col">
-          <p className="font-medium py-3"> {title } Invite Link</p>
+          <p className="font-medium py-3"> {title} Invite Link</p>
           <p className="text-gray-500">{link}</p>
         </div>
       </div>
@@ -472,7 +475,13 @@ const MembersSection = ({
                       {ROLES.map((r) => {
                         return (
                           <SelectItem value={r} key={r}>
-                            {r[0].toUpperCase() + r.slice(1).toLowerCase()}
+                            {
+                              {
+                                [ROLE_INSTRUCTOR]: "Instructor",
+                                [ROLE_TA]: "Teaching Assistant",
+                                [ROLE_STUDENT]: "Student",
+                              }[r]
+                            }
                           </SelectItem>
                         );
                       })}
