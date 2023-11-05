@@ -10,6 +10,7 @@
     "email": "email dev"
   },
   "dependencies": {
+    "@markdoc/markdoc": "^0.3.4",
     "@next/font": "13.4.19",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-avatar": "^1.0.3",
@@ -48,6 +49,7 @@
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "framer-motion": "^10.16.2",
+    "glob": "^10.3.10",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "lucide-react": "^0.272.0",
@@ -70,6 +72,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@types/glob": "^8.1.0",
     "@types/js-cookie": "^3.0.5",
     "@types/lodash": "^4.14.197",
     "autoprefixer": "^10.4.15",
