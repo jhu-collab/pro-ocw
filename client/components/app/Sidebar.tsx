@@ -30,7 +30,7 @@ interface StepsProps {
 const Steps: React.FC<StepsProps> = ({ steps, activeStepId }) => {
   return (
     <div className="relative flex w-full flex-col py-2">
-      <div className="absolute left-[15px] top-[28px] bottom-[25px] border-l border-gray-200 py-2" />
+      <div className="absolute left-[15px] top-[28px] bottom-[25px] border-l  py-2" />
       <div className="flex flex-col space-y-1">
         {steps.map((step) => (
           <div key={step.id} className={cn(`ml-4 flex items-center`)}>
@@ -112,7 +112,7 @@ export default function Sidebar({
   );
 
   return (
-    <nav className="flex h-full w-full flex-col border-r border-accent bg-secondary py-4">
+    <nav className="flex h-full w-full flex-col border-r bg-secondary py-4">
       <div className="flex h-full flex-col space-y-6 px-4">
         <Logo variant="wordmark" className="my-12" />
         <CourseSelector course={course} allCourses={allCourses} />

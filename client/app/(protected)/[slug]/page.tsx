@@ -6,7 +6,7 @@ import {
   getUser,
   getUserCourses,
 } from "@/lib/server";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +35,7 @@ export default async function TeamPage({
     coursebookId
   );
   if (currentCourseError) {
-    redirect("/signin");
+    notFound();
   }
 
   if (currentCourse) {
