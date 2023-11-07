@@ -61,7 +61,7 @@ export default function Start({
             </div>
           </div>
         </div>
-        <div className="hidden flex-1 items-center justify-center border-l bg-gray-50 lg:flex">
+        <div className="hidden flex-1 items-center justify-center border-l bg-secondary lg:flex">
           <div className="mx-8">
             <Testimonial />
           </div>
@@ -100,7 +100,7 @@ const CourseList = ({ courses }: { courses: Course[] }) => (
         <Link
           href={`/${course.coursebookId}`}
           key={course.coursebookId}
-          className="flex justify-between items-center p-3 border-b hover:bg-gray-100 cursor-pointer"
+          className="flex justify-between items-center p-3 border-b hover:bg-secondary cursor-pointer"
         >
           <span>{course.name}</span>
           <ChevronRightIcon />
@@ -132,7 +132,7 @@ const InviteList = ({
           <Link
             href={`/invitation/${invite.id}`}
             key={invite.id}
-            className="flex justify-between items-center p-3 border-b hover:bg-gray-100 cursor-pointer"
+            className="flex justify-between items-center p-3 border-b hover:bg-secondary cursor-pointer"
           >
             <span>{course.name}</span>
             <ChevronRightIcon />

@@ -1,7 +1,10 @@
 import SupabaseProvider from "@/providers/supabase-provider";
+
 import PHProvider from "@/providers/posthog-provider";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { ThemeToggle } from "@/components/home/ThemeToggle";
 
 export const metadata = {
   title: "Suparepo",
@@ -17,10 +20,18 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body>
-        <PHProvider>
-          <SupabaseProvider>{children}</SupabaseProvider>
-        </PHProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <PHProvider>
+            <ThemeToggle />
+            <SupabaseProvider>{children}</SupabaseProvider>
+          </PHProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -76,10 +76,10 @@ const Option = ({
   const currentPathname = usePathname();
 
   return (
-    <div className="flex w-full items-center justify-between rounded-md p-2 font-medium transition hover:bg-gray-200">
+    <div className="flex w-full items-center justify-between rounded-md p-2 font-medium transition hover:bg-primary">
       <div
         className={cn("flex items-center text-gray-700", {
-          "font-semibold text-gray-900": currentPathname === pathname,
+          "font-semibold text-primary": currentPathname === pathname,
         })}
       >
         <Icon className="mr-2 w-4" />
@@ -112,7 +112,7 @@ export default function Sidebar({
   );
 
   return (
-    <nav className="flex h-full w-full flex-col border-r border-gray-200 bg-gray-100 py-4">
+    <nav className="flex h-full w-full flex-col border-r border-gray-200 bg-secondary py-4">
       <div className="flex h-full flex-col space-y-6 px-4">
         <Logo variant="wordmark" className="my-12" />
         <CourseSelector course={course} allCourses={allCourses} />
