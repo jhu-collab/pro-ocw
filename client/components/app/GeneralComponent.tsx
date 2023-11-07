@@ -132,7 +132,7 @@ export default function GeneralComponent({
               }
               value={courseInfo.semester}
             >
-              <SelectTrigger className="bg-white">
+              <SelectTrigger className="bg-background">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

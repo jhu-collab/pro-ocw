@@ -43,8 +43,8 @@ export default function Shell({
           </div>
         </>
       )}
-      <div className="flex flex-col h-full w-full overflow-auto bg-white">
-        <div className="flex h-20 w-full flex-col justify-center border-b border-gray-200 bg-white px-4 md:px-8">
+      <div className="flex flex-col h-full w-full overflow-auto bg-background">
+        <div className="flex h-20 w-full flex-col justify-center border-b border-gray-200 bg-background px-4 md:px-8">
           <div className="flex items-center">
             <Button
               variant="ghost"
