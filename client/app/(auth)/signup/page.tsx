@@ -15,6 +15,7 @@ export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const { toast } = useToast();
 
@@ -23,6 +24,48 @@ export default function SignInPage() {
       e.preventDefault();
 
       if (!email) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Email is required",
+        });
+        return;
+      }
+
+      if (!password) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Password is required",
+        });
+        return;
+      }
+
+      if (!confirmPassword) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please confirm your password",
+        });
+        return;
+      }
+
+      if (!fullName) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Full name is required",
+        });
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        console.log(password, confirmPassword);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Passwords do not match",
+        });
         return;
       }
 
@@ -50,6 +93,10 @@ export default function SignInPage() {
 
   const updatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+  };
+
+  const updateConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setConfirmPassword(e.target.value);
   };
 
   const updateFullName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +142,20 @@ export default function SignInPage() {
           </div>
 
           <div className="flex flex-col">
+            <label className="mb-2 font-medium" htmlFor="password">
+              Confirm Password
+            </label>
+            <Input
+              className=""
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              value={confirmPassword}
+              onChange={updateConfirmPassword}
+            />
+          </div>
+
+          <div className="flex flex-col">
             <label className="mb-2 font-medium" htmlFor="fullName">
               Full Name
             </label>
@@ -118,7 +179,6 @@ export default function SignInPage() {
               Already have an account? <Link href={"/signin"}> Sign in </Link>
             </label>
           </div>
-
         </form>
       </div>
     </div>

@@ -113,7 +113,10 @@ export class InvitesService {
   }
 
   async deleteInvite(inviteId: string, userId: string): Promise<void> {
-    const invite = await this.getInviteById(inviteId, userId);
+    const invite = await this.inviteRepository.findOneBy({ id: inviteId });
+    if (!invite) {
+      throw new NotFoundException('Invite not found');
+    }
     const isInstructorOrTA = await this.membersService.isInstructorOrTA({
       courseId: invite.courseId,
       userId,

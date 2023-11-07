@@ -28,6 +28,7 @@ import {
   updateMember,
 } from "@/lib/api";
 import { ROLES, ROLE_INSTRUCTOR, ROLE_STUDENT, ROLE_TA } from "@/constants";
+import { roleToDisplay } from "@/lib/utils";
 
 const InviteSection = ({ course, user }: { course: Course; user: User }) => {
   const [loading, setLoading] = useState(false);
@@ -139,13 +140,7 @@ const InviteSection = ({ course, user }: { course: Course; user: User }) => {
                     {ROLES.map((role) => {
                       return (
                         <SelectItem key={role} value={role}>
-                          {
-                            {
-                              [ROLE_INSTRUCTOR]: "Instructor",
-                              [ROLE_TA]: "Teaching Assistant",
-                              [ROLE_STUDENT]: "Student",
-                            }[role]
-                          }
+                          {roleToDisplay(role)}
                         </SelectItem>
                       );
                     })}
@@ -180,7 +175,9 @@ const InviteLinkTab = ({ title, link }: { title: string; link: string }) => {
     <div className="flex justify-between border-b border-gray-100 py-3 px-4 last-of-type:border-none">
       <div className="flex items-center gap-x-2">
         <div className="flex flex-col">
-          <p className="font-medium py-3"> {title} Invite Link</p>
+          <p className="font-medium py-3">
+            Use the below link to invite {title.toLocaleLowerCase()}s
+          </p>
           <p className="text-gray-500">{link}</p>
         </div>
       </div>
@@ -191,32 +188,29 @@ const InviteLinkTab = ({ title, link }: { title: string; link: string }) => {
 const InviteLinkSection = ({ course }: { course: Course }) => {
   const links = course.inviteLinks;
   if (!links) return null;
-  const currentDomain = window.location.origin + "/invite-link/";
-  const studentLink = links.find((l) => l.role === ROLE_STUDENT);
-  const taLink = links.find((l) => l.role === ROLE_TA);
+  const linkPrefix = window.location.origin + "/invite-link/";
+
   return (
     <div className="rounded-lg border bg-background">
       <div className="px-6 py-4">
         <h3 className="text-lg font-medium">Invite Links</h3>
       </div>
-      <Tabs defaultValue="students" className="pb-2">
+      <Tabs defaultValue={ROLE_STUDENT} className="pb-2">
         <TabsList className="ml-4 mt-3 mb-1">
-          <TabsTrigger value="students">Student</TabsTrigger>
-          <TabsTrigger value="ta">Teaching Assistant</TabsTrigger>
+          {links.map((l) => (
+            <TabsTrigger value={l.role} key={l.id}>
+              {roleToDisplay(l.role)}
+            </TabsTrigger>
+          ))}
         </TabsList>
-
-        <TabsContent value="students">
-          <InviteLinkTab
-            title={"Student"}
-            link={currentDomain + studentLink?.id}
-          />
-        </TabsContent>
-        <TabsContent value="ta">
-          <InviteLinkTab
-            link={currentDomain + taLink?.id}
-            title={"Teaching Assistant"}
-          />
-        </TabsContent>
+        {links.map((l) => (
+          <TabsContent value={l.role} key={l.id}>
+            <InviteLinkTab
+              title={roleToDisplay(l.role)}
+              link={linkPrefix + l.id}
+            />
+          </TabsContent>
+        ))}
       </Tabs>
       <div className="mt-1 flex flex-col gap-y-2 px-6"></div>
     </div>
@@ -460,9 +454,7 @@ const MembersSection = ({
             <div className="flex items-center gap-x-6">
               <div className="">
                 {!canUpdateMember(m) ? (
-                  <span className="text-gray-500">
-                    {role[0].toUpperCase() + role.slice(1).toLowerCase()}
-                  </span>
+                  <span className="text-gray-500">{roleToDisplay(m.role)}</span>
                 ) : (
                   <Select
                     onValueChange={(v) => handleUpdateRole(m, v as Role)}
@@ -475,13 +467,7 @@ const MembersSection = ({
                       {ROLES.map((r) => {
                         return (
                           <SelectItem value={r} key={r}>
-                            {
-                              {
-                                [ROLE_INSTRUCTOR]: "Instructor",
-                                [ROLE_TA]: "Teaching Assistant",
-                                [ROLE_STUDENT]: "Student",
-                              }[r]
-                            }
+                            {roleToDisplay(r)}
                           </SelectItem>
                         );
                       })}
