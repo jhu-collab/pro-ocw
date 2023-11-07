@@ -107,7 +107,7 @@ const InviteSection = ({ course, user }: { course: Course; user: User }) => {
   }, [course, invites, router, toast, user]);
 
   return (
-    <div className="rounded-lg border bg-white">
+    <div className="rounded-lg border bg-background">
       <div className="px-6 py-4">
         <h3 className="text-lg font-medium">Invite</h3>
       </div>
@@ -165,7 +165,7 @@ const InviteSection = ({ course, user }: { course: Course; user: User }) => {
           <Plus className="w-4" /> Add another
         </Button>
       </div>
-      <div className="flex w-full justify-end rounded-b-lg border-t bg-gray-50 px-6 py-3">
+      <div className="flex w-full justify-end rounded-b-lg border-t bg-secondary px-6 py-3">
         <Button disabled={loading} onClick={handleSendInvites}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {loading ? "Sending invites" : "Send invites"}
@@ -195,7 +195,7 @@ const InviteLinkSection = ({ course }: { course: Course }) => {
   const studentLink = links.find((l) => l.role === ROLE_STUDENT);
   const taLink = links.find((l) => l.role === ROLE_TA);
   return (
-    <div className="rounded-lg border bg-white">
+    <div className="rounded-lg border bg-background">
       <div className="px-6 py-4">
         <h3 className="text-lg font-medium">Invite Links</h3>
       </div>
@@ -440,7 +440,7 @@ const MembersSection = ({
         const profile = m.user;
         return (
           <div
-            className="flex justify-between border-b border-gray-100 py-3 px-4 last-of-type:border-none"
+            className="flex justify-between border-b border-secondary py-3 px-4 last-of-type:border-none"
             key={m.id}
           >
             <div className="flex items-center gap-x-2">
@@ -468,7 +468,7 @@ const MembersSection = ({
                     onValueChange={(v) => handleUpdateRole(m, v as Role)}
                     defaultValue={role}
                   >
-                    <SelectTrigger className="bg-white">
+                    <SelectTrigger className="bg-background">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -533,7 +533,7 @@ export default function MembersComponent({
     <div className="flex flex-col gap-y-8">
       {isAdmin && <InviteSection course={course} user={user} />}
       {isAdmin && <InviteLinkSection course={course} />}
-      <div className="flex flex-col rounded-lg border bg-white">
+      <div className="flex flex-col rounded-lg border bg-background">
         <h3 className="ml-6 mt-4 text-lg font-medium">Members</h3>
         <Tabs defaultValue="members" className="pb-2">
           {isAdmin && (

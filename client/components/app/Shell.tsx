@@ -44,7 +44,7 @@ export default function Shell({
         </>
       )}
       <div className="flex flex-col h-full w-full overflow-auto bg-background">
-        <div className="flex h-20 w-full flex-col justify-center border-b border-gray-200 bg-background px-4 md:px-8">
+        <div className="flex h-20 w-full flex-col justify-center border-b border-secondary bg-background px-4 md:px-8">
           <div className="flex items-center">
             <Button
               variant="ghost"
