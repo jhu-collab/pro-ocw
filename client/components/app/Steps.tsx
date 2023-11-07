@@ -62,7 +62,7 @@ export default function Steps({
         )}
         {step.fieldType === "dropdown" && (
           <Select onValueChange={(value) => setInput(value)} value={input}>
-            <SelectTrigger className="bg-white">
+            <SelectTrigger className="bg-background">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

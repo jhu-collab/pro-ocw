@@ -55,7 +55,7 @@ export default function Onboarding({ user }: { user: Profile }) {
             </div>
           </div>
         </div>
-        <div className="hidden flex-1 items-center justify-center border-l bg-gray-50 lg:flex">
+        <div className="hidden flex-1 items-center justify-center border-l bg-background lg:flex">
           <div className="mx-8">
             <Testimonial />
           </div>
