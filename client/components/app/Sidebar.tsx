@@ -76,9 +76,9 @@ const Option = ({
   const currentPathname = usePathname();
 
   return (
-    <div className="flex w-full items-center justify-between rounded-md p-2 font-medium transition hover:bg-primary">
+    <div className="flex w-full items-center justify-between rounded-md p-2 font-medium transition hover:bg-accent">
       <div
-        className={cn("flex items-center text-gray-700", {
+        className={cn("flex items-center text-primary", {
           "font-semibold text-primary": currentPathname === pathname,
         })}
       >

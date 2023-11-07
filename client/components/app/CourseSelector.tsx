@@ -30,7 +30,7 @@ export default function TeamSelector({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex select-none items-center justify-between rounded-lg bg-white p-2 shadow-outline transition hover:shadow-md-outline">
+          <button className="flex select-none items-center justify-between rounded-lg bg-primary-foreground p-2 shadow-outline transition hover:shadow-md-outline">
             <div className="flex items-center space-x-2">
               <Avatar>
                 <AvatarFallback>{course?.name[0] ?? ""}</AvatarFallback>
@@ -41,7 +41,7 @@ export default function TeamSelector({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="animate-slideDownAndFadeIn rounded-md bg-white text-gray-900 transition"
+          className="animate-slideDownAndFadeIn rounded-md bg-background text-primary transition"
           align="start"
           sideOffset={4}
         >

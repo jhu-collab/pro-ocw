@@ -62,7 +62,7 @@ export default function UserProfileButton({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="ml-12 mb-4 animate-slideDownAndFadeIn rounded-md bg-white shadow-lg transition"
+        className="ml-12 mb-4 animate-slideDownAndFadeIn rounded-md bg-background shadow-lg transition"
         align="start"
         sideOffset={4}
       >
