@@ -17,9 +17,9 @@ const Subsection: React.FC<PropsWithChildren<{ title: string }>> = ({
 
 export default function Footer({ className }: { className?: string }) {
   return (
-    <div className={cn("border-t bg-gray-100", className)}>
+    <div className={cn("border-t bg-secondary", className)}>
       <Section>
-        <div className="flex min-h-[200px] flex-col justify-between gap-8 bg-gray-100 text-base md:flex-row">
+        <div className="flex min-h-[200px] flex-col justify-between gap-8 bg-secondary text-base md:flex-row">
           <div className="flex h-full shrink-0 flex-col">
             <Logo variant="wordmark" />
             <p className="mt-3 max-w-sm text-gray-600">

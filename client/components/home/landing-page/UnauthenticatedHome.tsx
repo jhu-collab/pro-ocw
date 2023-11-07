@@ -55,8 +55,8 @@ export const Hero = () => {
       }}
     >
       <Link href="/setup">
-        <div className="mx-auto mb-8 flex w-fit items-center rounded-lg border bg-gray-100 p-2 pr-1 ring-0 ring-gray-200 transition-[ring] hover:ring-4">
-          <span className="rounded-md bg-gray-300 px-2 py-[4px] text-xs font-semibold">
+        <div className="mx-auto mb-8 flex w-fit items-center rounded-lg border bg-secondary p-2 pr-1 ring-0 ring-secondary transition-[ring] hover:ring-4">
+          <span className="rounded-md bg-gray-300 px-2 py-[4px] text-xs font-semibold text-primary">
             SETUP
           </span>
           <p className="mx-2 hidden md:block">
@@ -118,21 +118,21 @@ export const FAQAccordion: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto rounded-lg border bg-gray-100">
+    <div className="mx-auto rounded-lg border bg-secondary">
       {FAQ_ITEMS.map((item, index) => {
         const open = activeIndexes.includes(index);
 
         return (
           <div
             key={index}
-            className="whitespace-pre-line border-b border-gray-200 text-base last:border-none"
+            className="whitespace-pre-line border-b border-secondary text-base last:border-none"
           >
             <button
-              className="flex w-full items-center space-x-4 py-6 px-5 text-gray-600"
+              className="flex w-full items-center space-x-4 py-6 px-5 text-primary"
               onClick={() => handleClick(index)}
             >
               <X
-                className={cn("w-3 shrink-0 text-gray-400 transition", {
+                className={cn("w-3 shrink-0 text-primary transition", {
                   "rotate-45": !open,
                 })}
               />
@@ -162,7 +162,7 @@ export const FeatureCard: React.FC<{
   description: string;
 }> = ({ title, icon: Icon, description }) => {
   return (
-    <div className="flex flex-col space-y-4 rounded-lg border p-6 ring-0 ring-gray-100 transition-[ring] hover:ring-4 md:p-8">
+    <div className="flex flex-col space-y-4 rounded-lg border p-6 ring-0 ring-secondary transition-[ring] hover:ring-4 md:p-8">
       <Icon className="h-8 w-8 stroke-1" />
       <h3 className="text-2xl font-semibold">{title}</h3>
       <p className="text-base font-light leading-snug text-gray-500">
