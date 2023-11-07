@@ -33,13 +33,13 @@ export default function ConfirmSettingsCard({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="mt-4 flex flex-col items-start justify-end gap-y-2 rounded-md border bg-white">
+    <div className="mt-4 flex flex-col items-start justify-end gap-y-2 rounded-md border bg-background">
       <div className="px-6 py-4">
         <div className="mb-3 text-lg font-medium">{title}</div>
         <p className="mb-3">{description}</p>
         {children}
       </div>
-      <div className="flex w-full justify-end rounded-b-md border-t bg-gray-50 px-6 py-3">
+      <div className="flex w-full justify-end rounded-b-md border-t bg-secondary px-6 py-3">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button className="self-end" variant={button.variant}>
