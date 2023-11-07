@@ -36,7 +36,7 @@ const Steps: React.FC<StepsProps> = ({ steps, activeStepId }) => {
           <div key={step.id} className={cn(`ml-4 flex items-center`)}>
             <div
               className={cn(`z-10 -ml-[3.5px] mr-2 h-1.5 w-1.5 rounded-full`, {
-                "bg-black font-semibold": step.id === activeStepId,
+                "bg-primary font-semibold": step.id === activeStepId,
                 "bg-gray-200 font-normal": step.id !== activeStepId,
               })}
             />
@@ -45,7 +45,7 @@ const Steps: React.FC<StepsProps> = ({ steps, activeStepId }) => {
                 variant={"link"}
                 size="sm"
                 className={cn("block w-full py-1 text-left", {
-                  "font-semibold text-black": step.id === activeStepId,
+                  "font-semibold text-primary": step.id === activeStepId,
                   "font-normal text-gray-500": step.id !== activeStepId,
                 })}
               >
@@ -112,7 +112,7 @@ export default function Sidebar({
   );
 
   return (
-    <nav className="flex h-full w-full flex-col border-r border-gray-200 bg-secondary py-4">
+    <nav className="flex h-full w-full flex-col border-r border-accent bg-secondary py-4">
       <div className="flex h-full flex-col space-y-6 px-4">
         <Logo variant="wordmark" className="my-12" />
         <CourseSelector course={course} allCourses={allCourses} />
