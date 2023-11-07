@@ -5,6 +5,7 @@ import cn from "@/lib/cn";
 import { Course, User } from "@/types/types";
 import { ChevronRight, Menu } from "lucide-react";
 import { useState } from "react";
+import { ThemeToggle } from "../home/ThemeToggle";
 
 export default function Shell({
   course,
@@ -45,30 +46,40 @@ export default function Shell({
       )}
       <div className="flex flex-col h-full w-full overflow-auto bg-background">
         <div className="flex h-20 w-full flex-col justify-center border-b border-accent bg-background px-4 md:px-8">
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              className="mr-2 md:hidden"
-              onClick={() => setMobileSidebarOpen((x) => !x)}
-            >
-              <Menu />
-            </Button>
-            <h1
-              className={cn("text-lg font-medium", {
-                "text-primary": !!subpage,
-              })}
-            >
-              {pageName}
-            </h1>
-            {subpage && (
-              <>
-                <ChevronRight className="mx-1 w-4 text-gray-400" />
-                <h2 className="text-lg font-medium">{subpage}</h2>
-              </>
-            )}
+          <div className="flex flex-row justify-between">
+            <div>
+              <div className="flex items-center">
+                <Button
+                  variant="ghost"
+                  className="mr-2 md:hidden"
+                  onClick={() => setMobileSidebarOpen((x) => !x)}
+                >
+                  <Menu />
+                </Button>
+                <h1
+                  className={cn("text-lg font-medium", {
+                    "text-primary": !!subpage,
+                  })}
+                >
+                  {pageName}
+                </h1>
+                {subpage && (
+                  <>
+                    <ChevronRight className="mx-1 w-4 text-gray-400" />
+                    <h2 className="text-lg font-medium">{subpage}</h2>
+                  </>
+                )}
+              </div>
+              <h2 className="hidden text-base text-primary md:block">
+                {subtitle}
+              </h2>
+            </div>
+            <div className="self-center">
+              <ThemeToggle />
+            </div>
           </div>
-          <h2 className="hidden text-base text-primary md:block">{subtitle}</h2>
         </div>
+
         <section
           className={cn(
             "relative flex flex-grow p-4 md:p-8",

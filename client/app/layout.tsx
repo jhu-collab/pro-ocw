@@ -4,7 +4,6 @@ import PHProvider from "@/providers/posthog-provider";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { ThemeToggle } from "@/components/home/ThemeToggle";
 
 export const metadata = {
   title: "Suparepo",
@@ -27,7 +26,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <PHProvider>
-            <ThemeToggle />
             <SupabaseProvider>{children}</SupabaseProvider>
           </PHProvider>
           <Toaster />
