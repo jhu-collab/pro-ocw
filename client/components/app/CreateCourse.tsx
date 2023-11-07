@@ -41,6 +41,7 @@ export default function CreateCourse({ user }: { user: User }) {
     fieldType: "dropdown",
     placeholder: "ex: FALL",
     dropdownItems: SEMESTERS,
+    selectDefault: "FALL",
     onSubmit: async (value: Semester) => {
       if (!value || !user) return;
       setCourse({ ...course, semester: value });
@@ -120,7 +121,7 @@ export default function CreateCourse({ user }: { user: User }) {
             </div>
           </div>
         </div>
-        <div className="hidden flex-1 items-center justify-center border-l bg-gray-50 lg:flex">
+        <div className="hidden flex-1 items-center justify-center border-l bg-background lg:flex">
           <div className="mx-8">
             <Testimonial />
           </div>
