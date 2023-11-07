@@ -55,7 +55,7 @@ export default function Shell({
             </Button>
             <h1
               className={cn("text-lg font-medium", {
-                "text-gray-700": !!subpage,
+                "text-primary": !!subpage,
               })}
             >
               {pageName}
@@ -67,7 +67,7 @@ export default function Shell({
               </>
             )}
           </div>
-          <h2 className="hidden text-base text-gray-500 md:block">
+          <h2 className="hidden text-base text-primary md:block">
             {subtitle}
           </h2>
         </div>
