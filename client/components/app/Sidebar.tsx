@@ -6,7 +6,7 @@ import {
 import Logo from "@/components/app/Logo";
 import cn from "@/lib/cn";
 import type { LucideIcon } from "lucide-react";
-import { ChevronDown, Home, Settings } from "lucide-react";
+import { ChevronDown, Home, Settings, Book } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -122,6 +122,13 @@ export default function Sidebar({
               title="Home"
               icon={Home}
               pathname={`/${course.coursebookId}`}
+            />
+          </Link>
+          <Link href={`/coursebooks/${course.coursebookId}`}>
+            <Option
+              title="Coursebook"
+              icon={Book}
+              pathname={`/coursebooks/${course.coursebookId}`}
             />
           </Link>
           <Collapsible
