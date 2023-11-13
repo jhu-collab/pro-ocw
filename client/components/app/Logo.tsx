@@ -1,3 +1,4 @@
+import { useTheme } from "next-themes";
 import Link from "next/link";
 
 const WordmarkSVG = () => (
@@ -71,7 +72,13 @@ export default function Logo({
   variant: "logo" | "wordmark";
   linkToHome?: boolean;
 }) {
-  const component = variant === "logo" ? <LogoSVG /> : <WordmarkSVG />;
+  const { theme } = useTheme();
+  let component;
+  if (theme === "dark") {
+    component = variant === "logo" ? <LogoSVG /> : <WordmarkSVG />; // TODO: replace with dark mode logos
+  } else {
+    component = variant === "logo" ? <LogoSVG /> : <WordmarkSVG />;
+  }
   if (linkToHome)
     return (
       <Link href={"/"} className={className}>
